@@ -2,24 +2,25 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { getBasePath } from '@/utils/paths';
 
 interface ProjectSectionProps {
   title: string;
   description: string;
-  imageUrl: string;
+  imageUrl?: string;
   isReversed?: boolean;
   isWashLoft?: boolean;
 }
 
-export default function ProjectSection({ title, description, imageUrl, isReversed = false, isWashLoft = false }: ProjectSectionProps) {
+export default function ProjectSection({ title, description, imageUrl = '', isReversed = false, isWashLoft = false }: ProjectSectionProps) {
   const [mounted, setMounted] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
-    dragFree: true,
-    containScroll: "keepSnaps",
+    dragFree: false,
+    containScroll: false,
     align: "center"
   });
 
@@ -35,12 +36,20 @@ export default function ProjectSection({ title, description, imageUrl, isReverse
   }, []);
 
   useEffect(() => {
-    if (isWashLoft && emblaApi && mounted) {
-      const interval = setInterval(() => {
-        emblaApi.scrollNext();
-      }, 6000);
-      return () => clearInterval(interval);
-    }
+    if (!isWashLoft || !emblaApi || !mounted || typeof window === 'undefined') return;
+
+    const startAutoplay = () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      intervalRef.current = setInterval(() => emblaApi.scrollNext(), 5000);
+    };
+
+    startAutoplay();
+    emblaApi.on('select', startAutoplay);
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      emblaApi.off('select', startAutoplay);
+    };
   }, [isWashLoft, emblaApi, mounted]);
 
   const renderCarousel = () => {
@@ -88,6 +97,28 @@ export default function ProjectSection({ title, description, imageUrl, isReverse
       </div>
     );
   };
+
+  if (!mounted) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className={`flex flex-col ${isReversed ? 'md:flex-row-reverse' : 'md:flex-row'} gap-8 min-h-[80vh] items-center justify-center p-8 md:p-16`}
+      >
+        <div className="flex-1 space-y-4">
+          <motion.h2 className="text-3xl md:text-4xl font-bold">{title}</motion.h2>
+          <motion.p className="text-lg text-gray-600 dark:text-gray-300">{description}</motion.p>
+        </div>
+        <motion.div className="flex-1 w-full">
+          <div className="relative h-[600px] w-full overflow-hidden shadow-lg">
+            <div className="absolute inset-0 bg-gray-100 dark:bg-gray-800 animate-pulse" />
+          </div>
+        </motion.div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
