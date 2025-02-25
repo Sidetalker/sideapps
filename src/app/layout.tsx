@@ -18,7 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geist.className} dark`}>
-      <body className="antialiased">
+      <head>
+        <meta name="color-scheme" content="dark" />
+      </head>
+      <body className="antialiased bg-black text-white">
         {children}
       </body>
     </html>

@@ -134,7 +134,7 @@ export default function ProjectSection({ title, description, imageUrl = '', isRe
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-3xl md:text-4xl font-bold"
+          className="text-3xl md:text-4xl font-bold text-white"
         >
           {title}
         </motion.h2>
@@ -143,7 +143,7 @@ export default function ProjectSection({ title, description, imageUrl = '', isRe
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-lg text-gray-600 dark:text-gray-300"
+          className="text-lg text-gray-300"
         >
           {description}
         </motion.p>

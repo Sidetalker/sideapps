@@ -8,7 +8,7 @@ export default function Home() {
     <main>
       <HeroSection />
 
-      <section className="relative bg-white dark:bg-black">
+      <section className="relative bg-black">
         <div className="space-y-24 pb-24">
           <div id="project-one">
             <ProjectSection
