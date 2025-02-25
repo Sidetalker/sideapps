@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import ModernIPhone from './ModernIPhone';
 
 export default function HeroSection() {
@@ -79,7 +79,7 @@ export default function HeroSection() {
         className="sticky md:top-[20vh] top-[180px] w-full h-screen mt-0 z-[5] md:z-30"
       >
         <div className="relative w-full h-full flex md:block justify-center">
-          <div className="md:absolute md:right-[10%] md:-translate-x-0">
+          <div className="relative md:absolute md:right-[10%] md:-translate-x-0 h-[600px] w-[300px] overflow-hidden">
             <ModernIPhone />
           </div>
         </div>
