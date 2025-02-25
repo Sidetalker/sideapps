@@ -4,11 +4,12 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
+import { getBasePath } from '@/utils/paths';
 
 interface ProjectSectionProps {
   title: string;
   description: string;
-  imageUrl?: string;
+  imageUrl: string;
   isReversed?: boolean;
   isWashLoft?: boolean;
 }
@@ -23,10 +24,10 @@ export default function ProjectSection({ title, description, imageUrl, isReverse
   });
 
   const washLoftImages = [
-    `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/washloft/screenshot1.png`,
-    `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/washloft/screenshot2.png`,
-    `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/washloft/screenshot3.png`,
-    `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/washloft/screenshot4.png`
+    `${getBasePath()}/washloft/screenshot1.png`,
+    `${getBasePath()}/washloft/screenshot2.png`,
+    `${getBasePath()}/washloft/screenshot3.png`,
+    `${getBasePath()}/washloft/screenshot4.png`
   ];
 
   useEffect(() => {
@@ -45,7 +46,7 @@ export default function ProjectSection({ title, description, imageUrl, isReverse
   const renderCarousel = () => {
     if (!mounted) {
       return (
-        <div className="relative w-full h-full overflow-hidden shadow-lg">
+        <div className="relative w-full h-[600px] overflow-hidden shadow-lg">
           <div className="absolute inset-0 bg-gray-100 dark:bg-gray-800 animate-pulse" />
           <Image
             src={washLoftImages[0]}
@@ -61,7 +62,7 @@ export default function ProjectSection({ title, description, imageUrl, isReverse
 
     return (
       <div 
-        className="h-full overflow-hidden shadow-lg" 
+        className="h-[600px] overflow-hidden shadow-lg" 
         ref={emblaRef}
       >
         <div className={`flex h-full touch-pan-y ${!mounted ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}>
@@ -121,21 +122,19 @@ export default function ProjectSection({ title, description, imageUrl, isReverse
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="flex-1 relative h-[500px] md:h-[600px] w-full"
+        className="flex-1 w-full"
       >
         {isWashLoft ? renderCarousel() : (
-          imageUrl && (
-            <div className="relative w-full h-full overflow-hidden">
-              <Image
-                src={imageUrl}
-                alt={title}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
-                style={{ borderRadius: '24px', overflow: 'hidden' }}
-              />
-            </div>
-          )
+          <div className="relative h-[600px] w-full overflow-hidden">
+            <Image
+              src={imageUrl}
+              alt={title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+              style={{ borderRadius: '24px', overflow: 'hidden' }}
+            />
+          </div>
         )}
       </motion.div>
     </motion.div>

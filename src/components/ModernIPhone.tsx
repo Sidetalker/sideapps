@@ -3,6 +3,7 @@
 import { motion, useAnimation } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { getBasePath } from '@/utils/paths';
 
 interface ProjectApp {
   name: string;
@@ -16,7 +17,7 @@ const projectApps: ProjectApp[] = [
     name: 'WashLoft',
     color: '',
     icon: <Image 
-            src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/washloft/icon.png`}
+            src={`${getBasePath()}/washloft/icon.png`}
             alt="WashLoft" 
             width={56} 
             height={56} 
@@ -44,7 +45,6 @@ export default function ModernIPhone() {
   const dynamicIslandControls = useAnimation();
 
   useEffect(() => {
-    setMounted(true);
     const updateTime = () => {
       const now = new Date();
       setCurrentTime(now.toLocaleTimeString('en-US', {
@@ -56,6 +56,7 @@ export default function ModernIPhone() {
 
     updateTime();
     const interval = setInterval(updateTime, 1000);
+    setMounted(true);
     return () => clearInterval(interval);
   }, []);
 
@@ -108,7 +109,7 @@ export default function ModernIPhone() {
           {/* Status Bar */}
           <div className="h-8 w-full flex items-center px-8 pt-2">
             <div className="text-[12px] text-white font-medium">
-              {!mounted ? '12:00 PM' : currentTime}
+              {mounted ? currentTime : ''}
             </div>
             <div className="ml-auto flex items-center space-x-1.5">
               <div className="flex space-x-px">

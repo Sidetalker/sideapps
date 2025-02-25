@@ -2,11 +2,13 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'export',
-  basePath: '/wip',
+  ...(process.env.NODE_ENV === 'production' ? {
+    basePath: '/wip',
+    assetPrefix: '/wip',
+  } : {}),
   images: {
     unoptimized: true,
   },
-  assetPrefix: '/wip',
 };
 
 export default nextConfig;
