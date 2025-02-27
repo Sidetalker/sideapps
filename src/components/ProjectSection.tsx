@@ -168,14 +168,16 @@ export default function ProjectSection({
         >
           {title}
         </motion.h2>
-        <motion.p 
-          initial={{ opacity: 0, x: isReversed ? 50 : -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-lg text-gray-300"
-        >
-          {description}
+        <div className="space-y-4">
+          <motion.p 
+            initial={{ opacity: 0, x: isReversed ? 50 : -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-lg text-gray-300"
+          >
+            {description}
+          </motion.p>
           {extendedDescription && (
             <>
               <div className="mt-4 hidden md:block space-y-2">
@@ -216,7 +218,7 @@ export default function ProjectSection({
               </div>
             </>
           )}
-        </motion.p>
+        </div>
       </div>
       <motion.div 
         initial={{ opacity: 0, scale: 0.8 }}
