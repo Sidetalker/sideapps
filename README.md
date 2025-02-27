@@ -1,5 +1,3 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
 ## Getting Started
 
 First, run the development server:
@@ -9,6 +7,16 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Deploy
+
+The project is configured for static deployment so there are no prerequisites to host on your site. Simply run
+
+```bash
+npm run build
+```
+
+and copy the contents of the `out` folder to the root of your site.
 
 ## Personal Use
 
