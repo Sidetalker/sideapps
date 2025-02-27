@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+import { ClarityAnalytics } from "@/components/ClarityAnalytics";
 import "./globals.css";
 
 const geist = Geist({
@@ -22,6 +23,7 @@ export default function RootLayout({
         <meta name="color-scheme" content="dark" />
       </head>
       <body className="antialiased bg-black text-white">
+        <ClarityAnalytics />
         {children}
       </body>
     </html>
