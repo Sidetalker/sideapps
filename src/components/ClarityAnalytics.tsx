@@ -4,7 +4,11 @@ import { useEffect } from 'react';
 
 declare global {
     interface Window {
-        clarity: any;
+        clarity: {
+            q?: unknown[];
+            (...args: unknown[]): void;
+        };
+        [key: string]: unknown;
     }
 }
 
@@ -12,8 +16,13 @@ export function ClarityAnalytics() {
     useEffect(() => {
         // Only run in production and client-side
         if (process.env.NODE_ENV === 'production' && typeof window !== 'undefined') {
-            (function(c: any, l: Document, a: string, r: string, i: string, t?: HTMLScriptElement, y?: Element){
-                c[a] = c[a] || function(){(c[a].q = c[a].q || []).push(arguments)};
+            (function(c: Window, l: Document, a: string, r: string, i: string, t?: HTMLScriptElement, y?: Element){
+                const clarityFunc = function(...args: unknown[]){
+                    const clarity = (c[a] as { q?: unknown[] });
+                    clarity.q = clarity.q || [];
+                    clarity.q.push(args);
+                };
+                c[a] = c[a] || clarityFunc;
                 if (l.createElement && l.getElementsByTagName) {
                     t = l.createElement(r) as HTMLScriptElement;
                     if (t) {
