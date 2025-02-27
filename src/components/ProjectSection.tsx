@@ -2,9 +2,14 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { useEffect, useState, useRef } from 'react';
-import useEmblaCarousel from 'embla-carousel-react';
+import { useEffect, useState } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { EffectCoverflow, Autoplay } from 'swiper/modules';
 import { getBasePath } from '@/utils/paths';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
 
 interface ProjectSectionProps {
   title: string;
@@ -16,41 +21,17 @@ interface ProjectSectionProps {
 
 export default function ProjectSection({ title, description, imageUrl = '', isReversed = false, isWashLoft = false }: ProjectSectionProps) {
   const [mounted, setMounted] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true,
-    dragFree: false,
-    containScroll: false,
-    align: "center"
-  });
 
   const washLoftImages = [
-    `${getBasePath()}/washloft/screenshot1.png`,
-    `${getBasePath()}/washloft/screenshot2.png`,
-    `${getBasePath()}/washloft/screenshot3.png`,
-    `${getBasePath()}/washloft/screenshot4.png`
+    `${getBasePath()}/washloft/screenshot1.png?v=2`,
+    `${getBasePath()}/washloft/screenshot2.png?v=2`,
+    `${getBasePath()}/washloft/screenshot3.png?v=2`,
+    `${getBasePath()}/washloft/screenshot4.png?v=2`
   ];
 
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  useEffect(() => {
-    if (!isWashLoft || !emblaApi || !mounted || typeof window === 'undefined') return;
-
-    const startAutoplay = () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      intervalRef.current = setInterval(() => emblaApi.scrollNext(), 5000);
-    };
-
-    startAutoplay();
-    emblaApi.on('select', startAutoplay);
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      emblaApi.off('select', startAutoplay);
-    };
-  }, [isWashLoft, emblaApi, mounted]);
 
   const renderCarousel = () => {
     if (!mounted) {
@@ -63,38 +44,58 @@ export default function ProjectSection({ title, description, imageUrl = '', isRe
             fill
             className="object-contain"
             sizes="(max-width: 768px) 100vw, 50vw"
-            style={{ borderRadius: '24px', overflow: 'hidden' }}
+            style={{ overflow: 'hidden' }}
+            priority={true}
+            loading="eager"
           />
         </div>
       );
     }
 
     return (
-      <div 
-        className="h-[600px] overflow-hidden shadow-lg" 
-        ref={emblaRef}
+      <Swiper
+        effect={'coverflow'}
+        grabCursor={true}
+        centeredSlides={true}
+        slidesPerView={'auto'}
+        loop={true}
+        speed={1000}
+        coverflowEffect={{
+          rotate: 50,
+          stretch: 0,
+          depth: 100,
+          modifier: 1,
+          slideShadows: true,
+        }}
+        autoplay={{
+          delay: 3000,
+          disableOnInteraction: false,
+        }}
+        modules={[EffectCoverflow, Autoplay]}
+        className="h-[600px] w-full swiper-container"
       >
-        <div className={`flex h-full touch-pan-y ${!mounted ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}>
-          {washLoftImages.map((img, index) => (
-            <div 
-              key={img}
-              className="relative flex-[0_0_100%] min-w-0 h-full pl-4"
-            >
-              <div className="relative w-full h-full overflow-hidden">
-                <Image
-                  src={img}
-                  alt={`WashLoft Screenshot ${index + 1}`}
-                  fill
-                  className="object-contain"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  style={{ borderRadius: '24px', overflow: 'hidden' }}
-                  priority={index === 0}
-                />
-              </div>
+        {washLoftImages.map((img, index) => (
+          <SwiperSlide key={img} className="!w-[80%] !max-w-[800px] swiper-slide-container">
+            <div className="relative w-full h-[90%] mx-auto my-auto">
+              <Image
+                src={img}
+                alt={`WashLoft Screenshot ${index + 1}`}
+                fill
+                className="object-contain"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                style={{ 
+                  overflow: 'hidden',
+                  maxHeight: '100%',
+                  width: '100%',
+                  height: '100%'
+                }}
+                priority={index === 0}
+                loading="eager"
+              />
             </div>
-          ))}
-        </div>
-      </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
     );
   };
 

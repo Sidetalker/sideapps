@@ -17,3 +17,45 @@ body {
   background: rgb(var(--background-rgb));
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Swiper custom styles */
+.swiper-container {
+  width: 100%;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.swiper-slide {
+  background-position: center;
+  background-size: cover;
+  transition: transform 0.6s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swiper-slide-container {
+  height: 100%;
+  padding: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swiper-slide-active {
+  transform: scale(1.05);
+}
+
+/* Enhanced 3D effect */
+.swiper-slide {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.swiper-slide img {
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+  transition: all 0.6s;
+  object-fit: contain !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
