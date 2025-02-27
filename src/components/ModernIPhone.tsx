@@ -96,6 +96,17 @@ const bottomRowApps: BottomRowApp[] = [
           />,
     onClick: () => window.open('https://www.linkedin.com/in/sideapps/', '_blank')
   },
+  {
+    name: 'Resume',
+    icon: <Image 
+            src={`${getBasePath()}/links/smallCloud.png`}
+            alt="Resume" 
+            width={56} 
+            height={56} 
+            className="w-full h-full object-cover rounded-2xl"
+          />,
+    onClick: () => window.open('https://sidetalker.smmall.cloud/MTc0MDY4OTQ0ODM2NA', '_blank')
+  },
 ];
 
 export default function ModernIPhone() {
@@ -171,12 +182,12 @@ export default function ModernIPhone() {
               {mounted ? currentTime : ''}
             </div>
             <div className="ml-auto flex items-center space-x-1.5">
-              <div className="flex space-x-px">
+              <div className="flex space-x-px items-end h-2.5">
                 {[...Array(4)].map((_, i) => (
                   <div 
                     key={i} 
                     className={`w-[3px] bg-white rounded-sm ${
-                      i === 3 ? 'h-2' : i === 2 ? 'h-2.5' : i === 1 ? 'h-3' : 'h-3.5'
+                      i === 3 ? 'h-2.5' : i === 2 ? 'h-[7.5px]' : i === 1 ? 'h-[5px]' : 'h-[2.5px]'
                     }`}
                   />
                 ))}
@@ -213,7 +224,7 @@ export default function ModernIPhone() {
           </div>
 
           {/* Bottom Row Apps */}
-          <div className="absolute bottom-8 left-0 right-0 flex justify-center space-x-6 px-6">
+          <div className="absolute bottom-8 left-0 right-0 grid grid-cols-4 gap-6 px-6">
             {bottomRowApps.map((app) => (
               <motion.button
                 key={app.name}
