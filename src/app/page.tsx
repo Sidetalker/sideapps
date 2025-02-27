@@ -1,5 +1,6 @@
 import ProjectSection from '@/components/ProjectSection';
 import HeroSection from '@/components/HeroSection';
+import ContactSection from '@/components/ContactSection';
 import { getBasePath } from '@/utils/paths';
 
 export default function Home() {
@@ -47,6 +48,7 @@ export default function Home() {
                 Designed a **shared SPM package** to streamline the codebase and reduce redundancy
               `}
               images={washLoftImages}
+              appStoreLink="https://apps.apple.com/us/app/washloft/id1290033575"
             />
           </div>
           <div id="project-two">
@@ -62,6 +64,7 @@ export default function Home() {
               `}
               images={projectTwoImages}
               isReversed
+              appStoreLink="https://apps.apple.com/us/app/capital-one-mobile/id407558537"
             />
           </div>
           <div id="project-three">
@@ -80,6 +83,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <ContactSection />
     </main>
   );
 }

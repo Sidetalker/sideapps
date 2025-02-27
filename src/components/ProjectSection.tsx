@@ -16,6 +16,7 @@ interface ProjectSectionProps {
   extendedDescription?: string;
   images?: string[];
   isReversed?: boolean;
+  appStoreLink?: string;
 }
 
 export default function ProjectSection({ 
@@ -24,6 +25,7 @@ export default function ProjectSection({
   extendedDescription,
   images = [], 
   isReversed = false,
+  appStoreLink,
 }: ProjectSectionProps) {
   const [mounted, setMounted] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -156,18 +158,30 @@ export default function ProjectSection({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className={`flex flex-col ${isReversed ? 'md:flex-row-reverse' : 'md:flex-row'} gap-8 min-h-[80vh] items-center justify-center p-8 md:p-16`}
+      className={`flex flex-col ${isReversed ? 'md:flex-row-reverse' : 'md:flex-row'} gap-8 min-h-[80vh] items-center justify-center p-8 md:p-16 relative z-20`}
     >
       <div className="flex-1 space-y-4">
-        <motion.h2 
-          initial={{ opacity: 0, x: isReversed ? 50 : -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-3xl md:text-4xl font-bold text-white"
-        >
-          {title}
-        </motion.h2>
+        <header className="flex flex-wrap items-center gap-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-white motion-safe:animate-fade-in">
+            {title}
+          </h2>
+          {appStoreLink && (
+            <a
+              href={appStoreLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-block"
+            >
+              <Image
+                src="/misc/appStoreLink.png"
+                alt="Download on App Store"
+                width={135}
+                height={40}
+                className="h-10 w-auto transition-transform duration-200 group-hover:scale-110"
+              />
+            </a>
+          )}
+        </header>
         <div className="space-y-4">
           <motion.p 
             initial={{ opacity: 0, x: isReversed ? 50 : -50 }}
@@ -182,10 +196,17 @@ export default function ProjectSection({
             <>
               <div className="mt-4 hidden md:block space-y-2">
                 {extendedDescription.split('\n').filter(line => line.trim()).map((line, index) => (
-                  <div key={index} className="flex items-start">
+                  <motion.div 
+                    key={index} 
+                    className="flex items-start"
+                    initial={{ opacity: 0, x: isReversed ? 50 : -50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.6 + (index * 0.1) }}
+                  >
                     <span className="mr-2">•</span>
                     <span>{formatText(line.trim().replace(/^-\s*/, ''))}</span>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
               

@@ -12,6 +12,12 @@ interface ProjectApp {
   sectionId: string;
 }
 
+interface BottomRowApp {
+  name: string;
+  icon: React.ReactNode;
+  onClick?: () => void;
+}
+
 const projectApps: ProjectApp[] = [
   {
     name: 'WashLoft',
@@ -49,6 +55,47 @@ const projectApps: ProjectApp[] = [
           />,
     sectionId: 'project-three'
   }
+];
+
+const bottomRowApps: BottomRowApp[] = [
+  {
+    name: 'Messages',
+    icon: <Image 
+            src={`${getBasePath()}/links/messages.png`}
+            alt="Messages" 
+            width={56} 
+            height={56} 
+            className="w-full h-full object-cover rounded-2xl"
+          />,
+    onClick: () => {
+      const contactSection = document.getElementById('contact');
+      if (contactSection) {
+        contactSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  },
+  {
+    name: 'GitHub',
+    icon: <Image 
+            src={`${getBasePath()}/links/github.png`}
+            alt="GitHub" 
+            width={56} 
+            height={56} 
+            className="w-full h-full object-cover rounded-2xl"
+          />,
+    onClick: () => window.open('https://github.com/Sidetalker', '_blank')
+  },
+  {
+    name: 'LinkedIn',
+    icon: <Image 
+            src={`${getBasePath()}/links/linkedIn.png`}
+            alt="LinkedIn" 
+            width={56} 
+            height={56} 
+            className="w-full h-full object-cover rounded-2xl"
+          />,
+    onClick: () => window.open('https://www.linkedin.com/in/sideapps/', '_blank')
+  },
 ];
 
 export default function ModernIPhone() {
@@ -159,6 +206,27 @@ export default function ModernIPhone() {
                   ) : (
                     app.icon
                   )}
+                </div>
+                <div className="text-[10px] text-white/90 mt-1">{app.name}</div>
+              </motion.button>
+            ))}
+          </div>
+
+          {/* Bottom Row Apps */}
+          <div className="absolute bottom-8 left-0 right-0 flex justify-center space-x-6 px-6">
+            {bottomRowApps.map((app) => (
+              <motion.button
+                key={app.name}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                whileHover={{ scale: 0.9 }}
+                whileTap={{ scale: 0.85 }}
+                transition={{ duration: 0.2 }}
+                onClick={app.onClick}
+                className="flex flex-col items-center focus:outline-none group"
+              >
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-200 group-hover:shadow-xl overflow-hidden">
+                  {app.icon}
                 </div>
                 <div className="text-[10px] text-white/90 mt-1">{app.name}</div>
               </motion.button>
