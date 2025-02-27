@@ -26,16 +26,16 @@ const projectApps: ProjectApp[] = [
     sectionId: 'project-one'
   },
   {
-    name: 'Project Two',
-    color: 'from-blue-500 to-blue-600',
-    icon: 'P2',
+    name: 'Capital One',
+    color: '',
+    icon: <Image 
+            src={`${getBasePath()}/capone/icon.png`}
+            alt="Capital One" 
+            width={56} 
+            height={56} 
+            className="w-full h-full object-cover rounded-2xl"
+          />,
     sectionId: 'project-two'
-  },
-  {
-    name: 'Project Three',
-    color: 'from-emerald-500 to-emerald-600',
-    icon: 'P3',
-    sectionId: 'project-three'
   }
 ];
 
