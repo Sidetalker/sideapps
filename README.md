@@ -1,3 +1,7 @@
+## See It In Action
+
+The site is live at [sideapps.com](https://sideapps.com)
+
 ## Getting Started
 
 First, run the development server:
