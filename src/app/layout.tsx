@@ -20,9 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geist.className} dark`}>
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <meta name="color-scheme" content="dark" />
       </head>
-      <body className="antialiased bg-black text-white">
+      <body className="antialiased bg-black text-white overflow-x-hidden">
         <ClarityAnalytics />
         {children}
       </body>

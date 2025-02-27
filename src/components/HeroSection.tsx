@@ -28,22 +28,22 @@ export default function HeroSection() {
       {/* Background */}
       <motion.div 
         style={{ opacity: elementOpacity }}
-        className="fixed top-0 left-0 right-0 z-10 h-[200px] bg-gradient-to-b from-[rgb(var(--background-rgb))] via-[rgb(var(--background-rgb))] to-transparent pointer-events-none"
+        className="fixed top-0 left-0 right-0 z-10 h-[200px] bg-gradient-to-b from-[rgb(var(--background-rgb))] via-[rgb(var(--background-rgb))] to-transparent pointer-events-none max-w-[100vw]"
       />
       
       {/* Content */}
       <motion.div 
         style={{ opacity: contentOpacity, y: contentY }}
-        className="fixed top-0 left-0 right-0 z-20 pointer-events-none"
+        className="fixed top-0 left-0 right-0 z-20 pointer-events-none max-w-[100vw]"
       >
         <div className="flex flex-col md:justify-start md:items-start items-center p-8 md:p-16 lg:p-24">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="md:max-w-[50%] pt-8 md:pt-16 pointer-events-auto"
+            className="md:max-w-[50%] pt-8 md:pt-16 pointer-events-auto w-full"
           >
-            <div className="flex flex-col items-center md:items-start">
+            <div className="flex flex-col items-center md:items-start w-full">
               <motion.h1 
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
