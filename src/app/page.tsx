@@ -21,6 +21,14 @@ export default function Home() {
     `${getBasePath()}/capone/screenshot8.png`,
   ];
 
+  const chewyImages = [
+    `${getBasePath()}/chewy/screenshot1.png`,
+    `${getBasePath()}/chewy/screenshot2.png`,
+    `${getBasePath()}/chewy/screenshot3.png`,
+    `${getBasePath()}/chewy/screenshot4.png`,
+    `${getBasePath()}/chewy/screenshot5.png`,
+  ];
+
   return (
     <main>
       <HeroSection />
@@ -54,6 +62,20 @@ export default function Home() {
               `}
               images={projectTwoImages}
               isReversed
+            />
+          </div>
+          <div id="project-three">
+            <ProjectSection
+              title="Chewy PracticeHub"
+              description="A platform for veterinarians to manage their practice and patients as well as approve prescription requests from pet owners."
+              extendedDescription={`
+                **Lead Mobile Engineer** on the PracticeHub team
+                **Built a team of iOS and Android engineers** to support the PracticeHub product
+                Reduced customer service workload **by 99%** by implementing a **self-service portal** for veterinarians to approve prescription requests
+                Designed the **core architecture** of the PracticeHub mobile app
+                Delivered the app in **10 months** supporting **1000s of veterinarians**
+              `}
+              images={chewyImages}
             />
           </div>
         </div>

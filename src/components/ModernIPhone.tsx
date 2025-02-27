@@ -36,6 +36,18 @@ const projectApps: ProjectApp[] = [
             className="w-full h-full object-cover rounded-2xl"
           />,
     sectionId: 'project-two'
+  },
+  {
+    name: 'Chewy',
+    color: '',
+    icon: <Image 
+            src={`${getBasePath()}/chewy/icon.png`}
+            alt="Chewy" 
+            width={56} 
+            height={56} 
+            className="w-full h-full object-cover rounded-2xl"
+          />,
+    sectionId: 'project-three'
   }
 ];
 
