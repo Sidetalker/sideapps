@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     siteName: "SideApps",
     images: [
       {
-        url: "/og-image.jpg",
+        url: `${baseUrl}/og-image.png`,
         width: 1200,
         height: 630,
         alt: "SideApps Portfolio"
@@ -43,7 +43,12 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "SideApps | iOS Developer Portfolio",
     description: "Experienced iOS developer with 10+ years building apps for WashLoft, Capital One, and Chewy. Specializing in Swift, UIKit, and modern iOS development.",
-    images: ["/og-image.jpg"],
+    images: [{
+      url: `${baseUrl}/og-image.png`,
+      width: 1200,
+      height: 630,
+      alt: "SideApps Portfolio"
+    }],
   },
   robots: {
     index: true,

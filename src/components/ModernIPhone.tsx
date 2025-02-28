@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useAnimation } from 'framer-motion';
+import { motion, useAnimation, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { getBasePath } from '@/utils/paths';
@@ -10,6 +10,7 @@ interface ProjectApp {
   color: string;
   icon: string | React.ReactNode;
   sectionId: string;
+  glowDelay?: number;
 }
 
 interface BottomRowApp {
@@ -29,7 +30,8 @@ const projectApps: ProjectApp[] = [
             height={56} 
             className="w-full h-full object-cover rounded-2xl"
           />,
-    sectionId: 'project-one'
+    sectionId: 'project-one',
+    glowDelay: 0
   },
   {
     name: 'Capital One',
@@ -41,7 +43,8 @@ const projectApps: ProjectApp[] = [
             height={56} 
             className="w-full h-full object-cover rounded-2xl"
           />,
-    sectionId: 'project-two'
+    sectionId: 'project-two',
+    glowDelay: 1
   },
   {
     name: 'Chewy',
@@ -53,7 +56,8 @@ const projectApps: ProjectApp[] = [
             height={56} 
             className="w-full h-full object-cover rounded-2xl"
           />,
-    sectionId: 'project-three'
+    sectionId: 'project-three',
+    glowDelay: 2
   },
   {
     name: 'AAF',
@@ -65,7 +69,8 @@ const projectApps: ProjectApp[] = [
             height={56} 
             className="w-full h-full object-cover rounded-2xl"
           />,
-    sectionId: 'project-four'
+    sectionId: 'project-four',
+    glowDelay: 3
   },
   {
     name: 'Amwell',
@@ -77,7 +82,8 @@ const projectApps: ProjectApp[] = [
             height={56} 
             className="w-full h-full object-cover rounded-2xl"
           />,
-    sectionId: 'project-five'
+    sectionId: 'project-five',
+    glowDelay: 4
   }
 ];
 
@@ -136,6 +142,9 @@ const bottomRowApps: BottomRowApp[] = [
 export default function ModernIPhone() {
   const [currentTime, setCurrentTime] = useState('');
   const [mounted, setMounted] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [currentGlowIndex, setCurrentGlowIndex] = useState(0);
   const dynamicIslandControls = useAnimation();
 
   useEffect(() => {
@@ -153,6 +162,15 @@ export default function ModernIPhone() {
     setMounted(true);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (!hasInteracted) {
+      const interval = setInterval(() => {
+        setCurrentGlowIndex(prev => (prev + 1) % projectApps.length);
+      }, 1500); // Just the duration, since we're not using repeatDelay anymore
+      return () => clearInterval(interval);
+    }
+  }, [hasInteracted]);
 
   const scrollToProject = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -174,18 +192,27 @@ export default function ModernIPhone() {
     });
   };
 
+  const handleInteraction = () => {
+    setIsHovered(true);
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.8, y: 100 }}
       animate={{ opacity: 0.9, scale: 1, y: 0 }}
       transition={{ duration: 1.5, ease: "easeOut" }}
+      onHoverStart={handleInteraction}
+      onTapStart={handleInteraction}
       className="transform rotate-[-15deg] md:rotate-[-25deg] scale-[0.55] md:scale-[0.65] lg:scale-75 pointer-events-auto"
     >
       {/* Dynamic Island */}
       <motion.div 
         initial={{ width: 96, height: 28 }}
         animate={dynamicIslandControls}
-        onClick={pulseIsland}
+        onClick={() => {
+          handleInteraction();
+          pulseIsland();
+        }}
         className="absolute left-1/2 -translate-x-1/2 top-[14px] bg-black rounded-[16px] z-20 shadow-lg cursor-pointer"
       >
         <div className="absolute inset-[2px] bg-black rounded-[14px] overflow-hidden">
@@ -224,23 +251,58 @@ export default function ModernIPhone() {
 
           {/* App Grid */}
           <div className="grid grid-cols-4 gap-4 p-6 mt-2">
-            {projectApps.map((app) => (
+            {projectApps.map((app, index) => (
               <motion.button
                 key={app.name}
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                whileHover={{ scale: 0.9 }}
+                whileHover={{ 
+                  scale: 0.9,
+                  transition: { duration: 0.2 }
+                }}
                 whileTap={{ scale: 0.85 }}
-                transition={{ duration: 0.2 }}
-                onClick={() => scrollToProject(app.sectionId)}
-                className="flex flex-col items-center focus:outline-none group"
+                onClick={() => {
+                  handleInteraction();
+                  scrollToProject(app.sectionId);
+                }}
+                className="flex flex-col items-center focus:outline-none group relative"
               >
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-200 group-hover:shadow-xl overflow-hidden ${app.color ? `bg-gradient-to-br ${app.color}` : ''}`}>
-                  {typeof app.icon === 'string' ? (
-                    <div className="text-[14px] text-white font-bold">{app.icon}</div>
-                  ) : (
-                    app.icon
-                  )}
+                <div className="relative">
+                  <div className={`relative z-10 w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-200 group-hover:shadow-xl overflow-hidden ${app.color ? `bg-gradient-to-br ${app.color}` : ''}`}>
+                    {typeof app.icon === 'string' ? (
+                      <div className="text-[14px] text-white font-bold">{app.icon}</div>
+                    ) : (
+                      app.icon
+                    )}
+                  </div>
+                  <AnimatePresence mode="wait">
+                    {!hasInteracted && currentGlowIndex === index && (
+                      <motion.div
+                        key={`glow-${index}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ 
+                          opacity: [0, 0.6, 0],
+                          scale: [1, 1.2, 1]
+                        }}
+                        exit={{ 
+                          opacity: 0,
+                          scale: 1,
+                          transition: { duration: 0.2 }
+                        }}
+                        transition={{ 
+                          duration: 2,
+                          repeat: 0
+                        }}
+                        onAnimationComplete={() => {
+                          if (isHovered) {
+                            setHasInteracted(true);
+                          }
+                        }}
+                        className="absolute inset-0 bg-white rounded-2xl"
+                        style={{ filter: 'blur(10px)', zIndex: 0 }}
+                      />
+                    )}
+                  </AnimatePresence>
                 </div>
                 <div className={`text-[10px] text-white/90 mt-1 ${app.name === 'Capital One' ? 'whitespace-nowrap' : ''}`}>
                   {app.name}
@@ -259,7 +321,10 @@ export default function ModernIPhone() {
                 whileHover={{ scale: 0.9 }}
                 whileTap={{ scale: 0.85 }}
                 transition={{ duration: 0.2 }}
-                onClick={app.onClick}
+                onClick={() => {
+                  handleInteraction();
+                  app.onClick?.();
+                }}
                 className="flex flex-col items-center focus:outline-none group"
               >
                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-200 group-hover:shadow-xl overflow-hidden">
