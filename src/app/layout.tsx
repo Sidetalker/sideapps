@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import { ClarityAnalytics } from "@/components/ClarityAnalytics";
 import "./globals.css";
@@ -7,8 +7,20 @@ const geist = Geist({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  colorScheme: 'dark'
+};
+
+const baseUrl = process.env.NODE_ENV === 'development' 
+  ? 'http://localhost:3000'
+  : 'https://sideapps.com';
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://sideapps.com'),
+  metadataBase: new URL(baseUrl),
   title: "SideApps",
   description: "Experienced iOS developer with 10+ years building apps for WashLoft, Capital One, and Chewy. Specializing in Swift, UIKit, and modern iOS development.",
   keywords: ["iOS developer", "Swift developer", "mobile app development", "iOS apps", "Swift programming", "SideApps", "Kevin Sullivan", "mobile developer", "app developer", "iOS engineer"],
@@ -17,14 +29,15 @@ export const metadata: Metadata = {
     description: "Experienced iOS developer with 10+ years building apps for WashLoft, Capital One, and Chewy. Specializing in Swift, UIKit, and modern iOS development.",
     type: "website",
     locale: "en_US",
+    siteName: "SideApps",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "SideApps Portfolio Preview"
+        alt: "SideApps Portfolio"
       }
-    ]
+    ],
   },
   twitter: {
     card: "summary_large_image",
@@ -55,10 +68,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geist.className} dark`}>
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-        <meta name="color-scheme" content="dark" />
-      </head>
       <body className="antialiased bg-black text-white overflow-x-hidden">
         <ClarityAnalytics />
         {children}

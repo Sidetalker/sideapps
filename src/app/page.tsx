@@ -30,6 +30,20 @@ export default function Home() {
     `${getBasePath()}/chewy/screenshot5.png`,
   ];
 
+  const aafImages = [
+    `${getBasePath()}/aaf/screenshot1.png`,
+    `${getBasePath()}/aaf/screenshot2.png`,
+    `${getBasePath()}/aaf/screenshot3.png`,
+  ];
+
+  const amwellImages = [
+    `${getBasePath()}/amwell/screenshot1.png`,
+    `${getBasePath()}/amwell/screenshot2.png`,
+    `${getBasePath()}/amwell/screenshot3.png`,
+    `${getBasePath()}/amwell/screenshot4.png`,
+    `${getBasePath()}/amwell/screenshot5.png`,
+  ];
+
   return (
     <main>
       <HeroSection />
@@ -79,6 +93,37 @@ export default function Home() {
                 Delivered the app in **10 months** supporting **1000s of veterinarians**
               `}
               images={chewyImages}
+            />
+          </div>
+          <div id="project-four">
+            <ProjectSection
+              title="Alliance of American Football"
+              description="A revolutionary new American football league that played one season in 2019 with groundbreaking technology and a focus on player and coach experience."
+              extendedDescription={`
+                **Mobile Engineer** for the **flagship** AAF app
+                Served over **10k consecutive users** streaming live games
+                Rendered real-time **custom 3D graphics** of the playing field
+                Implemented a **completely custom** scoreboard with real-time animations
+                Calculated play-by-play betting odds using **advanced sports betting algorithms**
+                **Rapidly iterated** on the app to support the launch of the league
+              `}
+              images={aafImages}
+              isReversed
+            />
+          </div>
+          <div id="project-five">
+            <ProjectSection
+              title="American Well for Clinicians"
+              description="A telehealth app for clinicians to manage their patients, schedule appointments, and conduct virtual visits."
+              extendedDescription={`
+                **Lead iOS Engineer** and **Manager** for the American Well for Clinicians app
+                Served **thousands** of clinicians nationwide
+                Proposed and lead the **Swift migration** of the app to **modernize the codebase**
+                Developed **advanced features** such as **live video conferencing** and **custom scheduling**
+                Implemented backend **API functionality** to support app features as needed
+              `}
+              images={amwellImages}
+              appStoreLink="https://apps.apple.com/us/app/american-well-for-clinicians/id982388638"
             />
           </div>
         </div>

@@ -54,6 +54,30 @@ const projectApps: ProjectApp[] = [
             className="w-full h-full object-cover rounded-2xl"
           />,
     sectionId: 'project-three'
+  },
+  {
+    name: 'AAF',
+    color: '',
+    icon: <Image 
+            src={`${getBasePath()}/aaf/icon.png`}
+            alt="Alliance of American Football" 
+            width={56} 
+            height={56} 
+            className="w-full h-full object-cover rounded-2xl"
+          />,
+    sectionId: 'project-four'
+  },
+  {
+    name: 'Amwell',
+    color: '',
+    icon: <Image 
+            src={`${getBasePath()}/amwell/icon.png`}
+            alt="Amwell" 
+            width={56} 
+            height={56} 
+            className="w-full h-full object-cover rounded-2xl"
+          />,
+    sectionId: 'project-five'
   }
 ];
 
@@ -199,7 +223,7 @@ export default function ModernIPhone() {
           </div>
 
           {/* App Grid */}
-          <div className="grid grid-cols-4 gap-6 p-6 mt-2">
+          <div className="grid grid-cols-4 gap-4 p-6 mt-2">
             {projectApps.map((app) => (
               <motion.button
                 key={app.name}
@@ -218,7 +242,9 @@ export default function ModernIPhone() {
                     app.icon
                   )}
                 </div>
-                <div className="text-[10px] text-white/90 mt-1">{app.name}</div>
+                <div className={`text-[10px] text-white/90 mt-1 ${app.name === 'Capital One' ? 'whitespace-nowrap' : ''}`}>
+                  {app.name}
+                </div>
               </motion.button>
             ))}
           </div>
