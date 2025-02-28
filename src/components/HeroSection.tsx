@@ -64,9 +64,9 @@ export default function HeroSection() {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-                className="hidden md:block text-base text-gray-600 dark:text-gray-300 text-center md:text-left max-w-[300px]"
+                className="text-base text-gray-600 dark:text-gray-300 text-center md:text-left max-w-[600px]"
               >
-                A personal and professional portfolio of apps created over the last 10 years
+                Experienced iOS developer with over a decade of expertise in creating innovative mobile applications. Specializing in Swift development, UI/UX design, and building scalable solutions for enterprise companies like Capital One and Chewy.
               </motion.p>
             </div>
           </motion.div>
