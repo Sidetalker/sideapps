@@ -19,6 +19,10 @@ interface BottomRowApp {
   onClick?: () => void;
 }
 
+interface ModernIPhoneProps {
+  onResumeClick: () => void;
+}
+
 const projectApps: ProjectApp[] = [
   {
     name: 'WashLoft',
@@ -87,65 +91,65 @@ const projectApps: ProjectApp[] = [
   }
 ];
 
-const bottomRowApps: BottomRowApp[] = [
-  {
-    name: 'Messages',
-    icon: <Image 
-            src={`${getBasePath()}/links/messages.png`}
-            alt="Messages" 
-            width={56} 
-            height={56} 
-            className="w-full h-full object-cover rounded-2xl"
-          />,
-    onClick: () => {
-      const contactSection = document.getElementById('contact');
-      if (contactSection) {
-        contactSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  },
-  {
-    name: 'GitHub',
-    icon: <Image 
-            src={`${getBasePath()}/links/github.png`}
-            alt="GitHub" 
-            width={56} 
-            height={56} 
-            className="w-full h-full object-cover rounded-2xl"
-          />,
-    onClick: () => window.open('https://github.com/Sidetalker', '_blank')
-  },
-  {
-    name: 'LinkedIn',
-    icon: <Image 
-            src={`${getBasePath()}/links/linkedIn.png`}
-            alt="LinkedIn" 
-            width={56} 
-            height={56} 
-            className="w-full h-full object-cover rounded-2xl"
-          />,
-    onClick: () => window.open('https://www.linkedin.com/in/sideapps/', '_blank')
-  },
-  {
-    name: 'Resume',
-    icon: <Image 
-            src={`${getBasePath()}/links/smallCloud.png`}
-            alt="Resume" 
-            width={56} 
-            height={56} 
-            className="w-full h-full object-cover rounded-2xl"
-          />,
-    onClick: () => window.open('https://sidetalker.smmall.cloud/MTc0MDY4OTQ0ODM2NA', '_blank')
-  },
-];
-
-export default function ModernIPhone() {
+export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
   const [currentTime, setCurrentTime] = useState('');
   const [mounted, setMounted] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [currentGlowIndex, setCurrentGlowIndex] = useState(0);
   const dynamicIslandControls = useAnimation();
+
+  const bottomRowApps: BottomRowApp[] = [
+    {
+      name: 'Messages',
+      icon: <Image 
+              src={`${getBasePath()}/links/messages.png`}
+              alt="Messages" 
+              width={56} 
+              height={56} 
+              className="w-full h-full object-cover rounded-2xl"
+            />,
+      onClick: () => {
+        const contactSection = document.getElementById('contact');
+        if (contactSection) {
+          contactSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    },
+    {
+      name: 'GitHub',
+      icon: <Image 
+              src={`${getBasePath()}/links/github.png`}
+              alt="GitHub" 
+              width={56} 
+              height={56} 
+              className="w-full h-full object-cover rounded-2xl"
+            />,
+      onClick: () => window.open('https://github.com/Sidetalker', '_blank')
+    },
+    {
+      name: 'LinkedIn',
+      icon: <Image 
+              src={`${getBasePath()}/links/linkedIn.png`}
+              alt="LinkedIn" 
+              width={56} 
+              height={56} 
+              className="w-full h-full object-cover rounded-2xl"
+            />,
+      onClick: () => window.open('https://www.linkedin.com/in/sideapps/', '_blank')
+    },
+    {
+      name: 'Resume',
+      icon: <Image 
+              src={`${getBasePath()}/links/resume.png`}
+              alt="Resume" 
+              width={56} 
+              height={56} 
+              className="w-full h-full object-cover rounded-2xl"
+            />,
+      onClick: () => onResumeClick()
+    },
+  ];
 
   useEffect(() => {
     const updateTime = () => {
@@ -323,7 +327,11 @@ export default function ModernIPhone() {
                 transition={{ duration: 0.2 }}
                 onClick={() => {
                   handleInteraction();
-                  app.onClick?.();
+                  if (app.name === 'Resume') {
+                    onResumeClick();
+                  } else {
+                    app.onClick?.();
+                  }
                 }}
                 className="flex flex-col items-center focus:outline-none group"
               >
