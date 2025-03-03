@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useAnimation, AnimatePresence } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import { getBasePath } from '@/utils/paths';
 
@@ -91,12 +91,84 @@ const projectApps: ProjectApp[] = [
   }
 ];
 
+// Matrix rain effect component
+const MatrixRain = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const resizeCanvas = () => {
+      if (canvas.parentElement) {
+        canvas.width = canvas.parentElement.offsetWidth;
+        canvas.height = canvas.parentElement.offsetHeight;
+      }
+    };
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const characters = '01';
+    const fontSize = 14;
+    const columns = Math.ceil(canvas.width / fontSize);
+    const drops: number[] = [];
+
+    for (let i = 0; i < columns; i++) {
+      drops[i] = Math.floor(Math.random() * canvas.height / fontSize);
+    }
+
+    const draw = () => {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = 'rgba(0, 255, 0, 0.7)';
+      ctx.font = `bold ${fontSize}px monospace`;
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = characters[Math.floor(Math.random() * characters.length)];
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+        
+        ctx.fillText(text, x, y);
+
+        if (y > canvas.height && Math.random() > 0.98) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    };
+
+    const interval = setInterval(draw, 50);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('resize', resizeCanvas);
+    };
+  }, []);
+
+  return (
+    <canvas 
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full opacity-50 pointer-events-none"
+      style={{ 
+        mixBlendMode: 'screen',
+        zIndex: 1
+      }}
+    />
+  );
+};
+
 export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
   const [currentTime, setCurrentTime] = useState('');
   const [mounted, setMounted] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [currentGlowIndex, setCurrentGlowIndex] = useState(0);
+  const [tapCount, setTapCount] = useState(0);
+  const [isDeveloperMode, setIsDeveloperMode] = useState(false);
   const dynamicIslandControls = useAnimation();
 
   const bottomRowApps: BottomRowApp[] = [
@@ -184,14 +256,46 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
   };
 
   const pulseIsland = async () => {
+    setTapCount(prev => {
+      const newCount = prev + 1;
+      
+      // Reset tap count after 2 seconds of no taps
+      setTimeout(() => setTapCount(0), 2000);
+      
+      // Check for developer mode activation (5 quick taps)
+      if (newCount === 5) {
+        const newDevMode = !isDeveloperMode;
+        setIsDeveloperMode(newDevMode);
+        
+        // Trigger special animation for developer mode toggle
+        dynamicIslandControls.start({
+          rotate: [0, 360],
+          scale: [1, 1.5, 1],
+          transition: { duration: 0.8 }
+        });
+        return 0;
+      }
+      return newCount;
+    });
+
+    // Log easter egg state change only when tap count reaches 4
+    if (tapCount === 4) {
+      // We check for 4 because the state hasn't updated yet when we check
+      const newDevMode = !isDeveloperMode;
+      console.log(`🔓 Easter egg ${newDevMode ? 'activated' : 'deactivated'}!`);
+    }
+
+    // Regular pulse animation
     await dynamicIslandControls.start({
-      width: 104,
-      height: 30,
+      width: isDeveloperMode ? 120 : 104,
+      height: isDeveloperMode ? 35 : 30,
+      backgroundColor: isDeveloperMode ? "#00ff00" : "#000000",
       transition: { duration: 0.3 }
     });
     await dynamicIslandControls.start({
       width: 96,
       height: 28,
+      backgroundColor: "#000000",
       transition: { duration: 0.2 }
     });
   };
@@ -217,9 +321,18 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
           handleInteraction();
           pulseIsland();
         }}
-        className="absolute left-1/2 -translate-x-1/2 top-[14px] bg-black rounded-[16px] z-20 shadow-lg cursor-pointer"
+        style={{ 
+          position: 'absolute',
+          left: '50%',
+          top: '14px',
+          transformOrigin: 'center',
+          x: '-50%'
+        }}
+        className="bg-black rounded-[16px] z-20 shadow-lg cursor-pointer"
       >
-        <div className="absolute inset-[2px] bg-black rounded-[14px] overflow-hidden">
+        <div className={`absolute inset-[2px] bg-black rounded-[14px] overflow-hidden transition-all duration-300 ${
+          isDeveloperMode ? 'bg-gradient-to-r from-green-900 to-black' : ''
+        }`}>
           <div className="w-full h-full bg-gradient-to-b from-gray-800/50 to-transparent" />
         </div>
       </motion.div>
@@ -231,6 +344,8 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
         
         {/* Screen */}
         <div className="w-full h-full bg-gradient-to-b from-gray-900 to-black rounded-[50px] relative overflow-hidden">
+          {isDeveloperMode && <MatrixRain />}
+          
           {/* Status Bar */}
           <div className="h-8 w-full flex items-center px-8 pt-2">
             <div className="text-[12px] text-white font-medium">
