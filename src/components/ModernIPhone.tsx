@@ -338,10 +338,6 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
   };
 
   const openFolder = () => {
-    // Get the folder button position for animation origin
-    if (folderButtonRef.current) {
-      // We don't need to capture the position since we're using layoutId for animation
-    }
     setIsFolderOpen(true);
   };
 
