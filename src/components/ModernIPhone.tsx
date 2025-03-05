@@ -4,6 +4,7 @@ import { motion, useAnimation, AnimatePresence } from 'framer-motion';
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import { getBasePath } from '@/utils/paths';
+import React from 'react';
 
 interface ProjectApp {
   name: string;
@@ -14,6 +15,12 @@ interface ProjectApp {
 }
 
 interface BottomRowApp {
+  name: string;
+  icon: React.ReactNode;
+  onClick?: () => void;
+}
+
+interface FolderApp {
   name: string;
   icon: React.ReactNode;
   onClick?: () => void;
@@ -169,7 +176,58 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
   const [currentGlowIndex, setCurrentGlowIndex] = useState(0);
   const [tapCount, setTapCount] = useState(0);
   const [isDeveloperMode, setIsDeveloperMode] = useState(false);
+  const [isFolderOpen, setIsFolderOpen] = useState(false);
   const dynamicIslandControls = useAnimation();
+
+  // Track folder animation origin
+  const folderButtonRef = useRef<HTMLDivElement>(null);
+
+  // Test folder apps
+  const folderApps: FolderApp[] = [
+    {
+      name: 'SplatPal',
+      icon: <Image 
+              src={`${getBasePath()}/splatpal/icon.png`}
+              alt="SplatPal" 
+              width={56} 
+              height={56} 
+              className="w-full h-full object-cover rounded-2xl"
+            />,
+      onClick: () => {
+        const splatpalSection = document.getElementById('splatpal');
+        if (splatpalSection) {
+          splatpalSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }
+  ];
+
+  // Simple effect for time updates
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      setCurrentTime(now.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      }));
+    };
+
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    setMounted(true);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (!hasInteracted) {
+      const interval = setInterval(() => {
+        setCurrentGlowIndex(prev => (prev + 1) % projectApps.length);
+      }, 1500);
+      return () => clearInterval(interval);
+    }
+  }, [hasInteracted]);
 
   const bottomRowApps: BottomRowApp[] = [
     {
@@ -222,31 +280,6 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
       onClick: () => onResumeClick()
     },
   ];
-
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setCurrentTime(now.toLocaleTimeString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-      }));
-    };
-
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    setMounted(true);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    if (!hasInteracted) {
-      const interval = setInterval(() => {
-        setCurrentGlowIndex(prev => (prev + 1) % projectApps.length);
-      }, 1500); // Just the duration, since we're not using repeatDelay anymore
-      return () => clearInterval(interval);
-    }
-  }, [hasInteracted]);
 
   const scrollToProject = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -304,6 +337,205 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
     setIsHovered(true);
   };
 
+  const openFolder = () => {
+    // Get the folder button position for animation origin
+    if (folderButtonRef.current) {
+      // We don't need to capture the position since we're using layoutId for animation
+    }
+    setIsFolderOpen(true);
+  };
+
+  const closeFolder = () => {
+    setIsFolderOpen(false);
+  };
+
+  // Folder component
+  const Folder = () => {
+    return (
+      <div className="flex flex-col items-center focus:outline-none group relative">
+        <div 
+          className="relative cursor-pointer" 
+          ref={folderButtonRef}
+          onClick={() => {
+            handleInteraction();
+            openFolder();
+          }}
+        >
+          <motion.div 
+            initial={{ scale: 1 }}
+            whileHover={{ 
+              scale: 0.9,
+              transition: { duration: 0.2 }
+            }}
+            whileTap={{ scale: 0.85 }}
+            className="relative z-10 w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-200 group-hover:shadow-xl overflow-hidden"
+          >
+            {/* Folder background with iOS-style blur */}
+            <div className="absolute inset-0 bg-gray-400/20 backdrop-blur-md"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-gray-300/30 to-gray-500/30"></div>
+            
+            {/* Folder grid */}
+            <div className="relative z-10 grid grid-cols-2 gap-1 p-1.5 w-full h-full">
+              {/* Show the SplatPal icon in the top left quadrant of the folder */}
+              <div className="flex items-start justify-start p-0">
+                <div className="w-5 h-5 rounded-lg overflow-hidden">
+                  <Image 
+                    src={`${getBasePath()}/splatpal/icon.png`}
+                    alt="SplatPal" 
+                    width={20} 
+                    height={20} 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </motion.div>
+          
+          {/* Subtle shadow under folder */}
+          <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-10 h-1 bg-black/20 blur-md rounded-full"></div>
+        </div>
+        <div className="text-[10px] text-white/90 mt-1 text-center">Personal Projects</div>
+      </div>
+    );
+  };
+
+  // Expanded folder view
+  const ExpandedFolder = () => {
+    // Use a ref to track if this is the first render
+    const isFirstRender = useRef(true);
+    
+    // Reset the first render flag when folder closes
+    useEffect(() => {
+      if (!isFolderOpen) {
+        isFirstRender.current = true;
+      } else {
+        // After a short delay, set first render to false to prevent re-animations
+        const timer = setTimeout(() => {
+          isFirstRender.current = false;
+        }, 500);
+        return () => clearTimeout(timer);
+      }
+    }, []);
+    
+    return (
+      <AnimatePresence mode="wait">
+        {isFolderOpen && (
+          <>
+            {/* Blurred background overlay - separate from the folder */}
+            <motion.div 
+              key="folder-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm z-50"
+              onClick={closeFolder}
+            />
+            
+            {/* Folder container - entire area outside the folder content should close the folder */}
+            <div 
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[60]"
+              onClick={closeFolder}
+            >
+              {/* Folder title - should also close the folder when clicked */}
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ delay: 0.1 }}
+                className="text-white text-center text-lg font-medium mb-4 cursor-default"
+              >
+                Personal Projects
+              </motion.div>
+              
+              {/* Animated folder container */}
+              <motion.div
+                key="folder-container"
+                initial={{ 
+                  scale: 0.1,
+                  opacity: 0,
+                }}
+                animate={{ 
+                  scale: 1, 
+                  opacity: 1,
+                }}
+                exit={{ 
+                  scale: 0.1, 
+                  opacity: 0,
+                }}
+                transition={{ 
+                  type: "spring", 
+                  damping: 15, 
+                  stiffness: 200,
+                  mass: 0.8,
+                }}
+                style={{ 
+                  transformOrigin: 'center',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                }}
+                className="w-[260px] h-[260px] relative rounded-3xl overflow-hidden"
+                layoutId="folder-animation"
+                onClick={(e) => {
+                  // Stop propagation to prevent the parent's onClick from firing
+                  // when clicking inside the folder content
+                  e.stopPropagation();
+                }}
+              >
+                {/* Additional background layers for visual effect */}
+                <div className="absolute inset-0 bg-gradient-to-b from-gray-500/20 to-gray-800/30 rounded-3xl"></div>
+                <div className="absolute inset-0 border border-white/10 rounded-3xl"></div>
+                <div className="absolute inset-0 shadow-inner rounded-3xl"></div>
+                
+                {/* Folder content */}
+                <div className="relative z-10 w-full h-full">
+                  <div className="grid grid-cols-3 grid-rows-3 gap-5 w-full h-full px-3 pt-5">
+                    {/* Render the SplatPal app in the top left */}
+                    <div className="col-start-1 row-start-1 flex flex-col items-center justify-center">
+                      <motion.button
+                        key="splatpal"
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ 
+                          scale: 1, 
+                          opacity: 1,
+                          transition: { delay: 0.2 }
+                        }}
+                        exit={{ 
+                          scale: 0.8, 
+                          opacity: 0,
+                          transition: { duration: 0.1 }
+                        }}
+                        whileHover={{ scale: 0.9 }}
+                        whileTap={{ scale: 0.85 }}
+                        className="flex flex-col items-center justify-center"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          closeFolder();
+                          folderApps[0].onClick?.();
+                        }}
+                      >
+                        <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-lg">
+                          {folderApps[0].icon}
+                        </div>
+                        <div className="text-[10px] text-white/90 mt-1">{folderApps[0].name}</div>
+                      </motion.button>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Folder shadow */}
+                <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-[200px] h-2 bg-black/20 blur-md rounded-full"></div>
+              </motion.div>
+            </div>
+          </>
+        )}
+      </AnimatePresence>
+    );
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.8, y: 100 }}
@@ -347,7 +579,7 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
           {isDeveloperMode && <MatrixRain />}
           
           {/* Status Bar */}
-          <div className="h-8 w-full flex items-center px-8 pt-2">
+          <div className="h-8 w-full flex items-center px-8 pt-2 z-10">
             <div className="text-[12px] text-white font-medium">
               {mounted ? currentTime : ''}
             </div>
@@ -369,7 +601,8 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
           </div>
 
           {/* App Grid */}
-          <div className="grid grid-cols-4 gap-4 p-6 mt-2">
+          <div className="grid grid-cols-4 gap-4 p-6 mt-2 z-20">
+            {/* All project apps */}
             {projectApps.map((app, index) => (
               <motion.button
                 key={app.name}
@@ -428,10 +661,13 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
                 </div>
               </motion.button>
             ))}
+            
+            {/* Folder next to Amwell (6th position) */}
+            <Folder />
           </div>
 
           {/* Bottom Row Apps */}
-          <div className="absolute bottom-8 left-0 right-0 grid grid-cols-4 gap-6 px-6">
+          <div className="absolute bottom-8 left-0 right-0 grid grid-cols-4 gap-6 px-6 z-20">
             {bottomRowApps.map((app) => (
               <motion.button
                 key={app.name}
@@ -459,7 +695,10 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
           </div>
 
           {/* Home Indicator */}
-          <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/30 rounded-full" />
+          <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/30 rounded-full z-20" />
+          
+          {/* Expanded Folder View - Render on top of everything */}
+          <ExpandedFolder />
         </div>
 
         {/* Screen Reflection Overlay */}

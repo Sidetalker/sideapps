@@ -44,6 +44,14 @@ export default function Home() {
     `${getBasePath()}/amwell/screenshot5.png`,
   ];
 
+  const splatpalImages = [
+    `${getBasePath()}/splatpal/screenshot1.png`,
+    `${getBasePath()}/splatpal/screenshot2.png`,
+    `${getBasePath()}/splatpal/screenshot3.png`,
+    `${getBasePath()}/splatpal/screenshot4.png`,
+    `${getBasePath()}/splatpal/screenshot5.png`,
+  ];
+
   return (
     <main>
       <HeroSection />
@@ -124,6 +132,22 @@ export default function Home() {
               `}
               images={amwellImages}
               appStoreLink="https://apps.apple.com/us/app/american-well-for-clinicians/id982388638"
+            />
+          </div>
+          <div id="splatpal">
+            <ProjectSection
+              title="SplatPal"
+              description="A passion project, and my first app featured on the App Store nearly 10 years ago. A companion app for the first Wii-U Splatoon game allowing players to track their gear, weapons, and stats."
+              extendedDescription={`
+                **Personal project** developed in my free time
+                Implemented **custom UI components** to match the game's aesthetic
+                Created a **comprehensive database** of all in-game items and stats
+                Featured **a watchOS app** for the first iteration of the Apple Watch
+                Connected to Nintendo's **SplatNet** API to retrieve real-time map updates
+                Included a **custom sharing** feature to allow players to share their loadouts over SMS
+              `}
+              images={splatpalImages}
+              isReversed
             />
           </div>
         </div>

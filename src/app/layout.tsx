@@ -27,6 +27,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "SideApps | iOS Developer Portfolio",
     description: "Experienced iOS developer with 10+ years building apps for WashLoft, Capital One, and Chewy. Specializing in Swift, UIKit, and modern iOS development.",
+    url: baseUrl,
     type: "website",
     locale: "en_US",
     siteName: "SideApps",
