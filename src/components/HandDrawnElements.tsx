@@ -94,7 +94,7 @@ export default function HandDrawnElements({ hasInteracted }: HandDrawnElementsPr
           <svg width="100%" height="100%" viewBox="0 0 400 180" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 pointer-events-none" style={{ pointerEvents: 'none' }}>
             {/* Main curved path with loop */}
             <motion.path
-              d="M140,80 C180,30 180,120 230,80 S280,30 340,80"
+              d="M140,80 C155,80 170,80 185,80 C200,80 215,75 225,65 C235,55 240,40 235,25 C230,10 215,5 200,10 C185,15 175,30 175,45 C175,60 185,75 200,80 C220,85 260,80 300,50 C320,35 330,25 340,15"
               stroke="white"
               strokeWidth="2.5"
               strokeLinecap="round"
@@ -104,7 +104,7 @@ export default function HandDrawnElements({ hasInteracted }: HandDrawnElementsPr
                 pathLength: 1, 
                 opacity: 1,
                 transition: { 
-                  pathLength: { delay: 1.5, duration: 2.2, ease: "easeInOut" },
+                  pathLength: { delay: 1.5, duration: 2, ease: "easeInOut" },
                   opacity: { delay: 1.5, duration: 0.3 }
                 }
               }}
@@ -112,7 +112,7 @@ export default function HandDrawnElements({ hasInteracted }: HandDrawnElementsPr
             
             {/* First arrowhead line */}
             <motion.path
-              d="M340,80 L315,81"
+              d="M340,15 L332,45"
               stroke="white"
               strokeWidth="2.5"
               strokeLinecap="round"
@@ -121,15 +121,15 @@ export default function HandDrawnElements({ hasInteracted }: HandDrawnElementsPr
                 pathLength: 1, 
                 opacity: 1,
                 transition: { 
-                  pathLength: { delay: 3.7, duration: 0.3, ease: "easeOut" },
-                  opacity: { delay: 3.7, duration: 0.1 }
+                  pathLength: { delay: 3.5, duration: 0.2, ease: "easeOut" },
+                  opacity: { delay: 3.5, duration: 0.1 }
                 }
               }}
             />
             
             {/* Second arrowhead line */}
             <motion.path
-              d="M340,80 L335,50"
+              d="M340,15 L310,21"
               stroke="white"
               strokeWidth="2.5"
               strokeLinecap="round"
@@ -138,8 +138,8 @@ export default function HandDrawnElements({ hasInteracted }: HandDrawnElementsPr
                 pathLength: 1, 
                 opacity: 1,
                 transition: { 
-                  pathLength: { delay: 4.0, duration: 0.3, ease: "easeOut" },
-                  opacity: { delay: 4.0, duration: 0.1 }
+                  pathLength: { delay: 3.75, duration: 0.2, ease: "easeOut" },
+                  opacity: { delay: 3.8, duration: 0.1 }
                 }
               }}
             />
