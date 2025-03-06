@@ -62,20 +62,22 @@ export default function HandDrawnElements({ hasInteracted }: HandDrawnElementsPr
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          style={{ pointerEvents: 'none' }}
         >
           {/* Hand-drawn text using inline style for font-family as a fallback */}
           <motion.div
-            className="absolute top-[40%] -translate-y-1/2 left-[0%]"
+            className="absolute top-[40%] -translate-y-1/2 left-[0%] pointer-events-none"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ 
               opacity: 1, 
               scale: 1,
               transition: { duration: 0.8, delay: 0.5 }
             }}
+            style={{ pointerEvents: 'none' }}
           >
             <div 
-              className="text-3xl font-bold text-white rotate-[-5deg]" 
-              style={{ fontFamily: "'Caveat', cursive" }}
+              className="text-3xl font-bold text-white rotate-[-5deg] pointer-events-none" 
+              style={{ fontFamily: "'Caveat', cursive", pointerEvents: 'none' }}
             >
               <RoughNotation 
                 type="highlight" 
@@ -89,7 +91,7 @@ export default function HandDrawnElements({ hasInteracted }: HandDrawnElementsPr
           </motion.div>
           
           {/* Hand-drawn arrow with separate animated parts */}
-          <svg width="100%" height="100%" viewBox="0 0 400 180" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute inset-0">
+          <svg width="100%" height="100%" viewBox="0 0 400 180" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 pointer-events-none" style={{ pointerEvents: 'none' }}>
             {/* Main curved path with loop */}
             <motion.path
               d="M140,80 C180,30 180,120 230,80 S280,30 340,80"

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { IoClose } from 'react-icons/io5';
 import { FiDownload } from 'react-icons/fi';
+import '../utils/pdfjs-polyfill';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
