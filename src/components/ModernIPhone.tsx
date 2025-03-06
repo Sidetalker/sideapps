@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import { getBasePath } from '@/utils/paths';
 import React from 'react';
+import FlappyBird from './FlappyBird';
 
 interface ProjectApp {
   name: string;
@@ -168,6 +169,40 @@ const MatrixRain = () => {
   );
 };
 
+// Add Flappy Bird App component outside the main component to prevent re-renders
+const FlappyBirdAppButton = React.memo(({ onClick }: { onClick: () => void }) => {
+  return (
+    <motion.button
+      key="flappy-bird-app"
+      initial={{ scale: 1 }}
+      animate={{ scale: 1 }}
+      whileHover={{ scale: 0.9 }}
+      whileTap={{ scale: 0.85 }}
+      transition={{ 
+        duration: 0.2,
+        type: "spring",
+        stiffness: 300,
+        damping: 20
+      }}
+      onClick={onClick}
+      className="flex flex-col items-center focus:outline-none group relative"
+    >
+      <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-200 group-hover:shadow-xl overflow-hidden">
+        <Image 
+          src={`${getBasePath()}/flappyBird/icon.png`}
+          alt="Flappy Bird" 
+          width={56} 
+          height={56} 
+          className="w-full h-full object-cover rounded-2xl"
+        />
+      </div>
+      <div className="text-[10px] text-white/90 mt-1">Flappy Bird</div>
+    </motion.button>
+  );
+});
+
+FlappyBirdAppButton.displayName = 'FlappyBirdAppButton';
+
 export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
   const [currentTime, setCurrentTime] = useState('');
   const [mounted, setMounted] = useState(false);
@@ -177,6 +212,7 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
   const [tapCount, setTapCount] = useState(0);
   const [isDeveloperMode, setIsDeveloperMode] = useState(false);
   const [isFolderOpen, setIsFolderOpen] = useState(false);
+  const [isFlappyBirdOpen, setIsFlappyBirdOpen] = useState(false);
   const dynamicIslandControls = useAnimation();
 
   // Track folder animation origin
@@ -217,7 +253,10 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
     const interval = setInterval(updateTime, 1000);
     setMounted(true);
     
-    return () => clearInterval(interval);
+    // Remove the automatic hasInteracted setting
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   useEffect(() => {
@@ -277,8 +316,8 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
               height={56} 
               className="w-full h-full object-cover rounded-2xl"
             />,
-      onClick: () => onResumeClick()
-    },
+      onClick: onResumeClick
+    }
   ];
 
   const scrollToProject = (sectionId: string) => {
@@ -532,6 +571,12 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
     );
   };
 
+  // Replace the FlappyBirdApp component with a simpler version that uses the memoized button
+  const handleFlappyBirdClick = () => {
+    handleInteraction();
+    setIsFlappyBirdOpen(true);
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.8, y: 100 }}
@@ -660,6 +705,9 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
             
             {/* Folder next to Amwell (6th position) */}
             <Folder />
+            
+            {/* Flappy Bird next to the folder */}
+            <FlappyBirdAppButton onClick={handleFlappyBirdClick} />
           </div>
 
           {/* Bottom Row Apps */}
@@ -695,6 +743,13 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
           
           {/* Expanded Folder View - Render on top of everything */}
           <ExpandedFolder />
+          
+          {/* Flappy Bird Game */}
+          <AnimatePresence>
+            {isFlappyBirdOpen && (
+              <FlappyBird onClose={() => setIsFlappyBirdOpen(false)} />
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Screen Reflection Overlay */}
