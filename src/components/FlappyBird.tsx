@@ -62,9 +62,10 @@ const CLOUDS = [
 
 interface FlappyBirdProps {
   onClose: () => void;
+  onGameStateChange?: (isPlaying: boolean) => void;
 }
 
-const FlappyBird: React.FC<FlappyBirdProps> = ({ onClose }) => {
+const FlappyBird: React.FC<FlappyBirdProps> = ({ onClose, onGameStateChange }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [gameStarted, setGameStarted] = useState(false);
@@ -583,6 +584,23 @@ const FlappyBird: React.FC<FlappyBirdProps> = ({ onClose }) => {
     };
   }, [gameStarted, gameOver, gameLoop, drawGameOverScreen]);
   
+  // Notify parent component when game is opened
+  useEffect(() => {
+    // Notify parent that game is active
+    onGameStateChange?.(true);
+    
+    // Cleanup function to notify parent when game is closed
+    return () => {
+      onGameStateChange?.(false);
+    };
+  }, [onGameStateChange]);
+
+  // Create a custom close handler that notifies parent before closing
+  const handleClose = useCallback(() => {
+    onGameStateChange?.(false);
+    onClose();
+  }, [onClose, onGameStateChange]);
+  
   return (
     <motion.div
       initial={{ scale: 1, opacity: 0 }}
@@ -591,9 +609,10 @@ const FlappyBird: React.FC<FlappyBirdProps> = ({ onClose }) => {
       className="fixed inset-0 z-50 bg-black flex items-center justify-center"
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="absolute top-3 right-3 z-10">
+      {/* Close button - hidden on mobile */}
+      <div className="absolute top-3 right-3 z-10 hidden md:block">
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="w-8 h-8 flex items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
         >
           ✕

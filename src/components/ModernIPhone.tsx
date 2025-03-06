@@ -29,6 +29,7 @@ interface FolderApp {
 
 interface ModernIPhoneProps {
   onResumeClick: () => void;
+  onFlappyBirdStateChange?: (isPlaying: boolean) => void;
 }
 
 const projectApps: ProjectApp[] = [
@@ -171,6 +172,14 @@ const MatrixRain = () => {
 
 // Add Flappy Bird App component outside the main component to prevent re-renders
 const FlappyBirdAppButton = React.memo(({ onClick }: { onClick: () => void }) => {
+  // Create a touch handler that calls onClick
+  const handleTouch = React.useCallback((e: React.TouchEvent) => {
+    // Prevent default to avoid any browser-specific handling
+    e.preventDefault();
+    // Call the onClick handler
+    onClick();
+  }, [onClick]);
+
   return (
     <motion.button
       key="flappy-bird-app"
@@ -185,6 +194,7 @@ const FlappyBirdAppButton = React.memo(({ onClick }: { onClick: () => void }) =>
         damping: 20
       }}
       onClick={onClick}
+      onTouchStart={handleTouch} // Add touch handler for mobile
       className="flex flex-col items-center focus:outline-none group relative"
     >
       <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-200 group-hover:shadow-xl overflow-hidden">
@@ -203,7 +213,7 @@ const FlappyBirdAppButton = React.memo(({ onClick }: { onClick: () => void }) =>
 
 FlappyBirdAppButton.displayName = 'FlappyBirdAppButton';
 
-export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
+export default function ModernIPhone({ onResumeClick, onFlappyBirdStateChange }: ModernIPhoneProps) {
   const [currentTime, setCurrentTime] = useState('');
   const [mounted, setMounted] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -386,6 +396,13 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
 
   // Folder component
   const Folder = () => {
+    // Create a touch handler for the folder
+    const handleFolderTouch = (e: React.TouchEvent) => {
+      e.preventDefault();
+      handleInteraction();
+      openFolder();
+    };
+    
     return (
       <div className="flex flex-col items-center focus:outline-none group relative">
         <div 
@@ -395,6 +412,7 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
             handleInteraction();
             openFolder();
           }}
+          onTouchStart={handleFolderTouch}
         >
           <motion.div 
             initial={{ scale: 1 }}
@@ -577,6 +595,26 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
     setIsFlappyBirdOpen(true);
   };
 
+  // Handle Flappy Bird game state change
+  const handleFlappyBirdStateChange = (isPlaying: boolean) => {
+    onFlappyBirdStateChange?.(isPlaying);
+  };
+
+  // Listen for the closeFlappyBird event
+  useEffect(() => {
+    const handleCloseFlappyBird = () => {
+      if (isFlappyBirdOpen) {
+        setIsFlappyBirdOpen(false);
+      }
+    };
+
+    window.addEventListener('closeFlappyBird', handleCloseFlappyBird);
+
+    return () => {
+      window.removeEventListener('closeFlappyBird', handleCloseFlappyBird);
+    };
+  }, [isFlappyBirdOpen]);
+
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.8, y: 100 }}
@@ -644,64 +682,74 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
           {/* App Grid */}
           <div className="grid grid-cols-4 gap-4 p-6 mt-2 z-20">
             {/* All project apps */}
-            {projectApps.map((app, index) => (
-              <motion.button
-                key={app.name}
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                whileHover={{ 
-                  scale: 0.9,
-                  transition: { duration: 0.2 }
-                }}
-                whileTap={{ scale: 0.85 }}
-                onClick={() => {
-                  handleInteraction();
-                  scrollToProject(app.sectionId);
-                }}
-                className="flex flex-col items-center focus:outline-none group relative"
-              >
-                <div className="relative">
-                  <div className={`relative z-10 w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-200 group-hover:shadow-xl overflow-hidden ${app.color ? `bg-gradient-to-br ${app.color}` : ''}`}>
-                    {typeof app.icon === 'string' ? (
-                      <div className="text-[14px] text-white font-bold">{app.icon}</div>
-                    ) : (
-                      app.icon
-                    )}
+            {projectApps.map((app, index) => {
+              // Create a touch handler for each app
+              const handleAppTouch = (e: React.TouchEvent) => {
+                e.preventDefault();
+                handleInteraction();
+                scrollToProject(app.sectionId);
+              };
+              
+              return (
+                <motion.button
+                  key={app.name}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  whileHover={{ 
+                    scale: 0.9,
+                    transition: { duration: 0.2 }
+                  }}
+                  whileTap={{ scale: 0.85 }}
+                  onClick={() => {
+                    handleInteraction();
+                    scrollToProject(app.sectionId);
+                  }}
+                  onTouchStart={handleAppTouch}
+                  className="flex flex-col items-center focus:outline-none group relative"
+                >
+                  <div className="relative">
+                    <div className={`relative z-10 w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-200 group-hover:shadow-xl overflow-hidden ${app.color ? `bg-gradient-to-br ${app.color}` : ''}`}>
+                      {typeof app.icon === 'string' ? (
+                        <div className="text-[14px] text-white font-bold">{app.icon}</div>
+                      ) : (
+                        app.icon
+                      )}
+                    </div>
+                    <AnimatePresence mode="wait">
+                      {!hasInteracted && currentGlowIndex === index && (
+                        <motion.div
+                          key={`glow-${index}`}
+                          initial={{ opacity: 0 }}
+                          animate={{ 
+                            opacity: [0, 0.6, 0],
+                            scale: [1, 1.2, 1]
+                          }}
+                          exit={{ 
+                            opacity: 0,
+                            scale: 1,
+                            transition: { duration: 0.2 }
+                          }}
+                          transition={{ 
+                            duration: 2,
+                            repeat: 0
+                          }}
+                          onAnimationComplete={() => {
+                            if (isHovered) {
+                              setHasInteracted(true);
+                            }
+                          }}
+                          className="absolute inset-0 bg-white rounded-2xl"
+                          style={{ filter: 'blur(10px)', zIndex: 0 }}
+                        />
+                      )}
+                    </AnimatePresence>
                   </div>
-                  <AnimatePresence mode="wait">
-                    {!hasInteracted && currentGlowIndex === index && (
-                      <motion.div
-                        key={`glow-${index}`}
-                        initial={{ opacity: 0 }}
-                        animate={{ 
-                          opacity: [0, 0.6, 0],
-                          scale: [1, 1.2, 1]
-                        }}
-                        exit={{ 
-                          opacity: 0,
-                          scale: 1,
-                          transition: { duration: 0.2 }
-                        }}
-                        transition={{ 
-                          duration: 2,
-                          repeat: 0
-                        }}
-                        onAnimationComplete={() => {
-                          if (isHovered) {
-                            setHasInteracted(true);
-                          }
-                        }}
-                        className="absolute inset-0 bg-white rounded-2xl"
-                        style={{ filter: 'blur(10px)', zIndex: 0 }}
-                      />
-                    )}
-                  </AnimatePresence>
-                </div>
-                <div className={`text-[10px] text-white/90 mt-1 ${app.name === 'Capital One' ? 'whitespace-nowrap' : ''}`}>
-                  {app.name}
-                </div>
-              </motion.button>
-            ))}
+                  <div className={`text-[10px] text-white/90 mt-1 ${app.name === 'Capital One' ? 'whitespace-nowrap' : ''}`}>
+                    {app.name}
+                  </div>
+                </motion.button>
+              );
+            })}
             
             {/* Folder next to Amwell (6th position) */}
             <Folder />
@@ -712,30 +760,44 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
 
           {/* Bottom Row Apps */}
           <div className="absolute bottom-8 left-0 right-0 grid grid-cols-4 gap-6 px-6 z-20">
-            {bottomRowApps.map((app) => (
-              <motion.button
-                key={app.name}
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                whileHover={{ scale: 0.9 }}
-                whileTap={{ scale: 0.85 }}
-                transition={{ duration: 0.2 }}
-                onClick={() => {
-                  handleInteraction();
-                  if (app.name === 'Resume') {
-                    onResumeClick();
-                  } else {
-                    app.onClick?.();
-                  }
-                }}
-                className="flex flex-col items-center focus:outline-none group"
-              >
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-200 group-hover:shadow-xl overflow-hidden">
-                  {app.icon}
-                </div>
-                <div className="text-[10px] text-white/90 mt-1">{app.name}</div>
-              </motion.button>
-            ))}
+            {bottomRowApps.map((app) => {
+              // Create a touch handler for each bottom row app
+              const handleBottomAppTouch = (e: React.TouchEvent) => {
+                e.preventDefault();
+                handleInteraction();
+                if (app.name === 'Resume') {
+                  onResumeClick();
+                } else {
+                  app.onClick?.();
+                }
+              };
+              
+              return (
+                <motion.button
+                  key={app.name}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  whileHover={{ scale: 0.9 }}
+                  whileTap={{ scale: 0.85 }}
+                  transition={{ duration: 0.2 }}
+                  onClick={() => {
+                    handleInteraction();
+                    if (app.name === 'Resume') {
+                      onResumeClick();
+                    } else {
+                      app.onClick?.();
+                    }
+                  }}
+                  onTouchStart={handleBottomAppTouch}
+                  className="flex flex-col items-center focus:outline-none group"
+                >
+                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-200 group-hover:shadow-xl overflow-hidden">
+                    {app.icon}
+                  </div>
+                  <div className="text-[10px] text-white/90 mt-1">{app.name}</div>
+                </motion.button>
+              );
+            })}
           </div>
 
           {/* Home Indicator */}
@@ -747,7 +809,10 @@ export default function ModernIPhone({ onResumeClick }: ModernIPhoneProps) {
           {/* Flappy Bird Game */}
           <AnimatePresence>
             {isFlappyBirdOpen && (
-              <FlappyBird onClose={() => setIsFlappyBirdOpen(false)} />
+              <FlappyBird 
+                onClose={() => setIsFlappyBirdOpen(false)} 
+                onGameStateChange={handleFlappyBirdStateChange}
+              />
             )}
           </AnimatePresence>
         </div>

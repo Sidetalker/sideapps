@@ -27,10 +27,12 @@ export default function HeroSection() {
 
   const [isPDFOpen, setIsPDFOpen] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [isFlappyBirdActive, setIsFlappyBirdActive] = useState(false);
 
   // Reset interaction state when component mounts
   useEffect(() => {
     setHasInteracted(false);
+    setIsFlappyBirdActive(false);
   }, []);
 
   // Handle iPhone interaction
@@ -42,6 +44,28 @@ export default function HeroSection() {
   const handlePDFOpen = () => {
     setHasInteracted(true);
     setIsPDFOpen(true);
+  };
+
+  // Handle Flappy Bird game state change
+  const handleFlappyBirdStateChange = (isPlaying: boolean) => {
+    setIsFlappyBirdActive(isPlaying);
+  };
+
+  // Handle the connect button click
+  const handleConnectButtonClick = () => {
+    if (isFlappyBirdActive) {
+      // If Flappy Bird is active, close it directly
+      setIsFlappyBirdActive(false);
+      // We need to communicate back to the iPhone to close the game
+      const event = new CustomEvent('closeFlappyBird');
+      window.dispatchEvent(event);
+    } else {
+      // Normal behavior - scroll to contact section
+      const contactSection = document.getElementById('contact');
+      if (contactSection) {
+        contactSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   };
 
   return (
@@ -91,17 +115,17 @@ export default function HeroSection() {
                   Seasoned iOS developer with 10+ years of experience crafting high-performance mobile applications. Expert in Swift, UI/UX design, and scalable architecture, delivering impactful solutions for top enterprises like Capital One and Chewy. Passionate about building seamless, user-centric experiences that drive results!
                 </motion.p>
                 
-                <motion.a
-                  href="#contact"
+                <motion.button
+                  onClick={handleConnectButtonClick}
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.5 }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="inline-block bg-black hover:bg-zinc-900 border-2 border-white/20 rounded-xl text-white font-medium py-3 px-6 transition-colors duration-200 pointer-events-auto z-50 relative w-[200px] text-center"
+                  className={`inline-block ${isFlappyBirdActive ? 'bg-red-600 hover:bg-red-700' : 'bg-black hover:bg-zinc-900'} border-2 border-white/20 rounded-xl text-white font-medium py-3 px-6 transition-colors duration-200 pointer-events-auto z-50 relative w-[200px] text-center`}
                 >
-                  Let&apos;s Connect!
-                </motion.a>
+                  {isFlappyBirdActive ? 'Exit Flappy Bird' : 'Let\'s Connect!'}
+                </motion.button>
               </div>
             </motion.div>
           </div>
@@ -122,7 +146,10 @@ export default function HeroSection() {
             <div className="relative md:absolute md:right-[10%] md:-translate-x-0 h-[600px] w-[300px] overflow-hidden z-40"
                  onClick={handleIPhoneInteraction}
                  onTouchStart={handleIPhoneInteraction}>
-              <ModernIPhone onResumeClick={handlePDFOpen} />
+              <ModernIPhone 
+                onResumeClick={handlePDFOpen} 
+                onFlappyBirdStateChange={handleFlappyBirdStateChange}
+              />
             </div>
           </div>
         </motion.div>
