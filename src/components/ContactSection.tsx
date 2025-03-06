@@ -35,7 +35,7 @@ export default function ContactSection() {
   };
 
   return (
-    <section id="contact" className="min-h-screen w-full flex items-center justify-center p-8 md:p-16">
+    <section id="contact" className="min-h-screen w-full flex items-center justify-center p-8 md:p-16 relative z-50">
       <motion.div 
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}

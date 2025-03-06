@@ -117,3 +117,16 @@ section {
   touch-action: pan-y pinch-zoom;
   width: 100%;
 }
+
+/* Safari-specific fix for form inputs */
+@media not all and (min-resolution:.001dpcm) { 
+  @supports (-webkit-appearance:none) {
+    input, 
+    textarea, 
+    select, 
+    button {
+      z-index: 100;
+      position: relative;
+    }
+  }
+}

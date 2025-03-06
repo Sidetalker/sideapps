@@ -25,6 +25,12 @@ export default function HeroSection() {
     [1, 1, 0]
   );
 
+  // Add a transform for pointer events based on scroll position
+  const pointerEventsValue = useTransform(scrollY,
+    [0, 500],
+    ['auto', 'none']
+  );
+
   const [isPDFOpen, setIsPDFOpen] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isFlappyBirdActive, setIsFlappyBirdActive] = useState(false);
@@ -74,7 +80,7 @@ export default function HeroSection() {
         {/* Background */}
         <motion.div 
           style={{ opacity: elementOpacity }}
-          className="fixed top-0 left-0 right-0 z-10 h-[200px] bg-gradient-to-b from-[rgb(var(--background-rgb))] via-[rgb(var(--background-rgb))] to-transparent pointer-events-none max-w-[100vw]"
+          className="fixed top-0 left-0 right-0 z-[-1] h-[200px] bg-gradient-to-b from-[rgb(var(--background-rgb))] via-[rgb(var(--background-rgb))] to-transparent pointer-events-none max-w-[100vw]"
         />
         
         {/* Content */}
@@ -87,7 +93,8 @@ export default function HeroSection() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              className="md:max-w-[50%] pt-8 md:pt-16 pointer-events-auto w-full"
+              style={{ pointerEvents: pointerEventsValue }}
+              className="md:max-w-[50%] pt-8 md:pt-16 w-full"
             >
               <div className="flex flex-col items-center md:items-start w-full">
                 <motion.h1 
@@ -122,7 +129,8 @@ export default function HeroSection() {
                   transition={{ duration: 0.8, delay: 0.5 }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className={`inline-block ${isFlappyBirdActive ? 'bg-red-600 hover:bg-red-700' : 'bg-black hover:bg-zinc-900'} border-2 border-white/20 rounded-xl text-white font-medium py-3 px-6 transition-colors duration-200 pointer-events-auto z-50 relative w-[200px] text-center`}
+                  style={{ pointerEvents: pointerEventsValue }}
+                  className={`inline-block ${isFlappyBirdActive ? 'bg-red-600 hover:bg-red-700' : 'bg-black hover:bg-zinc-900'} border-2 border-white/20 rounded-xl text-white font-medium py-3 px-6 transition-colors duration-200 relative w-[200px] text-center`}
                 >
                   {isFlappyBirdActive ? 'Exit Flappy Bird' : 'Let\'s Connect!'}
                 </motion.button>
@@ -143,14 +151,17 @@ export default function HeroSection() {
             </div>
             
             {/* iPhone Container */}
-            <div className="relative md:absolute md:right-[10%] md:-translate-x-0 h-[600px] w-[300px] overflow-hidden z-40"
-                 onClick={handleIPhoneInteraction}
-                 onTouchStart={handleIPhoneInteraction}>
+            <motion.div 
+              style={{ pointerEvents: pointerEventsValue }}
+              className="relative md:absolute md:right-[10%] md:-translate-x-0 h-[600px] w-[300px] overflow-hidden z-40"
+              onClick={handleIPhoneInteraction}
+              onTouchStart={handleIPhoneInteraction}
+            >
               <ModernIPhone 
                 onResumeClick={handlePDFOpen} 
                 onFlappyBirdStateChange={handleFlappyBirdStateChange}
               />
-            </div>
+            </motion.div>
           </div>
         </motion.div>
       </section>
