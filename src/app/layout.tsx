@@ -1,10 +1,18 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
+import { Caveat } from "next/font/google";
 import { ClarityAnalytics } from "@/components/ClarityAnalytics";
 import "./globals.css";
 
 const geist = Geist({
   subsets: ["latin"],
+});
+
+const caveat = Caveat({
+  subsets: ["latin"],
+  weight: ['400', '700'],
+  display: 'swap',
+  variable: '--font-caveat',
 });
 
 export const viewport: Viewport = {
@@ -73,7 +81,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geist.className} dark`}>
+    <html lang="en" className={`${geist.className} ${caveat.variable} dark`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet" />
+      </head>
       <body className="antialiased bg-black text-white overflow-x-hidden">
         <ClarityAnalytics />
         {children}

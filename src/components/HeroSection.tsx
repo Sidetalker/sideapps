@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { useRef, useState, useEffect } from 'react';
 import ModernIPhone from './ModernIPhone';
 import PDFViewer from './PDFViewer';
+import HandDrawnElements from './HandDrawnElements';
 
 export default function HeroSection() {
   const ref = useRef(null);
@@ -26,18 +27,10 @@ export default function HeroSection() {
 
   const [isPDFOpen, setIsPDFOpen] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
-  const [showPulse, setShowPulse] = useState(false);
 
   // Reset interaction state when component mounts
   useEffect(() => {
     setHasInteracted(false);
-    
-    // Delay showing the pulse animation
-    const timer = setTimeout(() => {
-      setShowPulse(true);
-    }, 2800);
-    
-    return () => clearTimeout(timer);
   }, []);
 
   // Handle iPhone interaction
@@ -145,25 +138,16 @@ export default function HeroSection() {
           className="sticky md:top-[20vh] top-[215px] w-full h-screen mt-0 z-[5] md:z-20"
         >
           <div className="relative w-full h-full flex md:block justify-center">
-            {/* Touch Me text - desktop only */}
-            <AnimatePresence>
-              {!hasInteracted && (
-                <motion.div 
-                  className="hidden md:flex absolute right-[10%] top-[-40px] w-[300px] justify-center items-center"
-                  initial="initial"
-                  animate={showPulse ? "pulse" : "visible"}
-                  exit={{ opacity: 0, transition: { duration: 0.5 } }}
-                  variants={pulseVariants}
-                >
-                  <span className="text-white font-medium text-xl">Projects</span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
+            {/* iPhone Container */}
             <div className="relative md:absolute md:right-[10%] md:-translate-x-0 h-[600px] w-[300px] overflow-hidden"
                  onClick={handleIPhoneInteraction}
                  onTouchStart={handleIPhoneInteraction}>
               <ModernIPhone onResumeClick={handlePDFOpen} />
+            </div>
+            
+            {/* Hand-drawn elements - positioned relative to the iPhone - hidden on mobile */}
+            <div className="relative md:absolute w-full h-full hidden md:block">
+              <HandDrawnElements hasInteracted={hasInteracted} />
             </div>
           </div>
         </motion.div>
