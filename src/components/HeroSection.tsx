@@ -1,7 +1,7 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { useRef, useState, useEffect } from 'react';
 import ModernIPhone from './ModernIPhone';
 import PDFViewer from './PDFViewer';
 
@@ -25,6 +25,56 @@ export default function HeroSection() {
   );
 
   const [isPDFOpen, setIsPDFOpen] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const [showPulse, setShowPulse] = useState(false);
+
+  // Reset interaction state when component mounts
+  useEffect(() => {
+    setHasInteracted(false);
+    
+    // Delay showing the pulse animation
+    const timer = setTimeout(() => {
+      setShowPulse(true);
+    }, 2800);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Handle iPhone interaction
+  const handleIPhoneInteraction = () => {
+    setHasInteracted(true);
+  };
+
+  // Handle PDF opening separately
+  const handlePDFOpen = () => {
+    setHasInteracted(true);
+    setIsPDFOpen(true);
+  };
+
+  // Pulse animation for the "Touch Me" text
+  const pulseVariants = {
+    initial: {
+      opacity: 0,
+      scale: 0.9
+    },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.8,
+        delay: 2
+      }
+    },
+    pulse: {
+      scale: [1, 1.08, 1],
+      opacity: [0.9, 1, 0.9],
+      transition: {
+        duration: 2,
+        repeat: Infinity,
+        repeatType: "reverse" as const
+      }
+    }
+  };
 
   return (
     <>
@@ -82,7 +132,7 @@ export default function HeroSection() {
                   whileTap={{ scale: 0.98 }}
                   className="inline-block bg-black hover:bg-zinc-900 border-2 border-white/20 rounded-xl text-white font-medium py-3 px-6 transition-colors duration-200 pointer-events-auto z-50 relative w-[200px] text-center"
                 >
-                  Get in Touch!
+                  Let&apos;s Connect!
                 </motion.a>
               </div>
             </motion.div>
@@ -95,8 +145,25 @@ export default function HeroSection() {
           className="sticky md:top-[20vh] top-[215px] w-full h-screen mt-0 z-[5] md:z-20"
         >
           <div className="relative w-full h-full flex md:block justify-center">
-            <div className="relative md:absolute md:right-[10%] md:-translate-x-0 h-[600px] w-[300px] overflow-hidden">
-              <ModernIPhone onResumeClick={() => setIsPDFOpen(true)} />
+            {/* Touch Me text - desktop only */}
+            <AnimatePresence>
+              {!hasInteracted && (
+                <motion.div 
+                  className="hidden md:flex absolute right-[10%] top-[-40px] w-[300px] justify-center items-center"
+                  initial="initial"
+                  animate={showPulse ? "pulse" : "visible"}
+                  exit={{ opacity: 0, transition: { duration: 0.5 } }}
+                  variants={pulseVariants}
+                >
+                  <span className="text-white font-medium text-xl">Projects</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <div className="relative md:absolute md:right-[10%] md:-translate-x-0 h-[600px] w-[300px] overflow-hidden"
+                 onClick={handleIPhoneInteraction}
+                 onTouchStart={handleIPhoneInteraction}>
+              <ModernIPhone onResumeClick={handlePDFOpen} />
             </div>
           </div>
         </motion.div>
