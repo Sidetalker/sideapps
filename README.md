@@ -1,6 +1,6 @@
 ## See It In Action
 
-The site is live at [sideapps.com](https://sideapps.dev)
+The site is live at [sideapps.dev](https://sideapps.dev)
 
 ## Getting Started
 
