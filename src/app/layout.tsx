@@ -18,9 +18,10 @@ const caveat = Caveat({
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-  colorScheme: 'dark'
+  maximumScale: 5,
+  userScalable: true,
+  colorScheme: 'dark',
+  themeColor: '#000000'
 };
 
 const baseUrl = process.env.NODE_ENV === 'development' 
@@ -29,35 +30,75 @@ const baseUrl = process.env.NODE_ENV === 'development'
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
-  title: "SideApps",
+  title: "SideApps | iOS Developer Portfolio",
   description: "Experienced iOS developer with 10+ years building apps for WashLoft, Capital One, and Chewy. Specializing in Swift, UIKit, and modern iOS development.",
+  applicationName: "SideApps Portfolio",
+  authors: [{ name: "Kevin Sullivan", url: "https://sideapps.com" }],
+  generator: "Next.js",
   keywords: ["iOS developer", "Swift developer", "mobile app development", "iOS apps", "Swift programming", "SideApps", "Kevin Sullivan", "mobile developer", "app developer", "iOS engineer"],
+  referrer: "origin-when-cross-origin",
+  creator: "Kevin Sullivan",
+  publisher: "SideApps",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   openGraph: {
     title: "SideApps | iOS Developer Portfolio",
     description: "Experienced iOS developer with 10+ years building apps for WashLoft, Capital One, and Chewy. Specializing in Swift, UIKit, and modern iOS development.",
-    url: baseUrl,
+    url: "https://sideapps.com",
     type: "website",
     locale: "en_US",
     siteName: "SideApps",
     images: [
       {
-        url: `${baseUrl}/og-image.png`,
+        url: "https://sideapps.com/og-image-v1.png",
+        width: 1200,
+        height: 630,
+        alt: "SideApps Portfolio"
+      },
+      {
+        url: "https://sideapps.com/og-image-dark-v1.png",
+        width: 1200,
+        height: 630,
+        alt: "SideApps Portfolio (Dark Mode)"
+      }
+    ],
+  },
+  other: {
+    'og:image': 'https://sideapps.com/og-image-dark-v1.png',
+    'og:image:width': '1200',
+    'og:image:height': '630',
+    'og:image:alt': 'SideApps Portfolio',
+    'og:image:light': 'https://sideapps.com/og-image-v1.png',
+    'og:image:dark': 'https://sideapps.com/og-image-dark-v1.png',
+    'theme-color': '#000000',
+    'color-scheme': 'dark',
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SideApps | iOS Developer Portfolio",
+    description: "Experienced iOS developer with 10+ years building apps for WashLoft, Capital One, and Chewy. Specializing in Swift, UIKit, and modern iOS development.",
+    creator: "@sideapps",
+    images: [
+      {
+        url: "https://sideapps.com/og-image-v1.png",
         width: 1200,
         height: 630,
         alt: "SideApps Portfolio"
       }
     ],
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "SideApps | iOS Developer Portfolio",
-    description: "Experienced iOS developer with 10+ years building apps for WashLoft, Capital One, and Chewy. Specializing in Swift, UIKit, and modern iOS development.",
-    images: [{
-      url: `${baseUrl}/og-image.png`,
-      width: 1200,
-      height: 630,
-      alt: "SideApps Portfolio"
-    }],
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" }
+    ],
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180" }
+    ],
+    shortcut: "/favicon.ico"
   },
   robots: {
     index: true,
