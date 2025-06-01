@@ -26,14 +26,14 @@ export const viewport: Viewport = {
 
 const baseUrl = process.env.NODE_ENV === 'development' 
   ? 'http://localhost:3000'
-  : 'https://sideapps.com';
+  : 'https://sideapps.dev';
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: "SideApps | iOS Developer Portfolio",
   description: "Experienced iOS developer with 10+ years building apps for WashLoft, Capital One, and Chewy. Specializing in Swift, UIKit, and modern iOS development.",
   applicationName: "SideApps Portfolio",
-  authors: [{ name: "Kevin Sullivan", url: "https://sideapps.com" }],
+  authors: [{ name: "Kevin Sullivan", url: "https://sideapps.dev" }],
   generator: "Next.js",
   keywords: ["iOS developer", "Swift developer", "mobile app development", "iOS apps", "Swift programming", "SideApps", "Kevin Sullivan", "mobile developer", "app developer", "iOS engineer"],
   referrer: "origin-when-cross-origin",
@@ -47,13 +47,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "SideApps | iOS Developer Portfolio",
     description: "Experienced iOS developer with 10+ years building apps for WashLoft, Capital One, and Chewy. Specializing in Swift, UIKit, and modern iOS development.",
-    url: "https://sideapps.com",
+    url: "https://sideapps.dev",
     type: "website",
     locale: "en_US",
     siteName: "SideApps",
     images: [
       {
-        url: "https://sideapps.com/og-image.png",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "SideApps Portfolio"
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
     ],
   },
   other: {
-    'og:image': 'https://sideapps.com/og-image.png',
+    'og:image': '/og-image.png',
     'og:image:width': '1200',
     'og:image:height': '630',
     'og:image:alt': 'SideApps Portfolio',
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     creator: "@sideapps",
     images: [
       {
-        url: "https://sideapps.com/og-image.png",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "SideApps Portfolio"
