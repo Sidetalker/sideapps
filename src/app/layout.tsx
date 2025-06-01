@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import { Caveat } from "next/font/google";
 import { ClarityAnalytics } from "@/components/ClarityAnalytics";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css";
 
 const geist = Geist({
@@ -121,6 +122,7 @@ export default function RootLayout({
     <html lang="en" className={`${geist.className} ${caveat.variable} dark`}>
       <body className="antialiased bg-black text-white overflow-x-hidden">
         <ClarityAnalytics />
+        <SpeedInsights/>
         {children}
       </body>
     </html>
