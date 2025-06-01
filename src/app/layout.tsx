@@ -55,7 +55,8 @@ export const metadata: Metadata = {
     siteName: "SideApps",
     images: [
       {
-        url: "/og-image.png",
+        url: "https://sideapps.dev/og-image.png",
+        type: 'image/png',
         width: 1200,
         height: 630,
         alt: "SideApps Portfolio"
@@ -63,7 +64,7 @@ export const metadata: Metadata = {
     ],
   },
   other: {
-    'og:image': '/og-image.png',
+    'og:image': 'https://sideapps.dev/og-image.png',
     'og:image:width': '1200',
     'og:image:height': '630',
     'og:image:alt': 'SideApps Portfolio',
@@ -77,7 +78,7 @@ export const metadata: Metadata = {
     creator: "@sideapps",
     images: [
       {
-        url: "/og-image.png",
+        url: "https://sideapps.dev/og-image.png",
         width: 1200,
         height: 630,
         alt: "SideApps Portfolio"
