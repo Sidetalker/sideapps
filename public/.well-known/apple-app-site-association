@@ -3,9 +3,10 @@
     "apps": [],
     "details": [
       {
-        "appID": "BJCYPHYPU2.com.patronyk.NutraAIM",
+        "appID": "BJCYPHYPU2.com.firebase.UniversalLinks",
         "paths": [
-          "*"
+          "NOT /_/*",
+          "/*"
         ]
       }
     ]
