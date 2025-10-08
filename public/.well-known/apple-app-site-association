@@ -3,12 +3,16 @@
     "apps": [],
     "details": [
       {
-        "appID": "BJCYPHYPU2.com.firebase.UniversalLinks",
+        "appID": "BJCYPHYPU2.com.patronyk.NutraAIM",
         "paths": [
-          "NOT /_/*",
-          "/*"
+          "/__/auth/*"
         ]
       }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "BJCYPHYPU2.com.patronyk.NutraAIM"
     ]
   }
 }
