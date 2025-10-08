@@ -13,6 +13,7 @@
   "dependencies": {
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
+    "caniuse-lite": "^1.0.30001749",
     "framer-motion": "^12.4.7",
     "i": "^0.3.7",
     "next": "15.1.7",

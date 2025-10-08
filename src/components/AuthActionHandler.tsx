@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import AuthActionMessage from './AuthActionMessage';
 
 const APP_STORE_URL = 'https://apps.apple.com/app/<NUTRA-TBD>';
 const DEEP_LINK_SCHEME = 'nutra://auth/action';
@@ -43,14 +44,7 @@ export function AuthActionHandler() {
     };
   }, [mode, oobCode, apiKey, continueUrl]);
 
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center px-6 py-16 text-center">
-      <h1 className="text-2xl font-semibold">Opening Nutra App...</h1>
-      <p className="mt-4 max-w-md text-base text-gray-600">
-        If the app doesn&apos;t open automatically, please install it from the App Store.
-      </p>
-    </main>
-  );
+  return <AuthActionMessage />;
 }
 
 export default AuthActionHandler;
