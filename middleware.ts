@@ -3,6 +3,11 @@ import { NextResponse } from 'next/server';
 
 const AUTH_CANONICAL_PATH = '/__/auth';
 const LEGACY_AUTH_PREFIX = '/__auth';
+const AUTH_ALLOWED_HOSTS = new Set([
+  'sideapps.dev',
+  'nutra.sideapps.dev',
+  'nutra-dev.sideapps.dev',
+]);
 
 function shouldRewriteAuthPath(hostname: string | null, pathname: string): boolean {
   if (!pathname.startsWith(LEGACY_AUTH_PREFIX)) {
@@ -13,7 +18,7 @@ function shouldRewriteAuthPath(hostname: string | null, pathname: string): boole
     return true;
   }
 
-  if (hostname === 'sideapps.dev' || hostname.endsWith('.sideapps.dev')) {
+  if (AUTH_ALLOWED_HOSTS.has(hostname) || hostname.endsWith('.vercel.app')) {
     return true;
   }
 
