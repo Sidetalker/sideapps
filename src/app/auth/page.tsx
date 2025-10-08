@@ -1,5 +1,5 @@
 import AuthActionHandler from '@/components/AuthActionHandler';
 
-export default function AuthActionPage() {
+export default function AuthPage() {
   return <AuthActionHandler />;
 }
