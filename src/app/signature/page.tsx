@@ -11,11 +11,14 @@ export default function SignaturePage() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Email Signature Editor
-          </h1>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img 
+            src="/journeyWest/textLogo.jpg" 
+            alt="Journey West Colorado Email Signature Editor" 
+            className="mx-auto mb-4 h-16 w-auto"
+          />
           <p className="text-gray-600">
-            Create professional email signatures with real-time preview
+            The Mountains are Calling... <span className="italic font-bold">don't wait around on your email signature</span>
           </p>
         </div>
         <SignatureEditor />
