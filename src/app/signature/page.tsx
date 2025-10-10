@@ -18,7 +18,7 @@ export default function SignaturePage() {
             className="mx-auto mb-4 h-16 w-auto"
           />
           <p className="text-gray-600">
-            The Mountains are Calling... <span className="italic font-bold">don't wait around on your email signature</span>
+            The Mountains are Calling... <span className="italic font-bold">don&apos;t wait around on your email signature</span>
           </p>
         </div>
         <SignatureEditor />
