@@ -50,5 +50,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [`${LEGACY_AUTH_PREFIX}/:path*`],
+  matcher: ['/__auth/:path*'],
 };
