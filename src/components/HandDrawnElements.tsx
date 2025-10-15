@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RoughNotation } from '@turahe/react-rough-notation';
+import { RoughNotation } from './RoughNotation';
 
 interface HandDrawnElementsProps {
   hasInteracted: boolean;
