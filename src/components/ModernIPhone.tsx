@@ -32,6 +32,13 @@ interface ModernIPhoneProps {
   onFlappyBirdStateChange?: (isPlaying: boolean) => void;
 }
 
+interface TouchHandlers {
+  onTouchStart: (event: React.TouchEvent) => void;
+  onTouchEnd: (event: React.TouchEvent) => void;
+  onTouchMove: (event: React.TouchEvent) => void;
+  onTouchCancel: (event: React.TouchEvent) => void;
+}
+
 const projectApps: ProjectApp[] = [
   {
     name: 'WashLoft',
@@ -171,15 +178,7 @@ const MatrixRain = () => {
 };
 
 // Add Flappy Bird App component outside the main component to prevent re-renders
-const FlappyBirdAppButton = React.memo(({ onClick }: { onClick: () => void }) => {
-  // Create a touch handler that calls onClick
-  const handleTouch = React.useCallback((e: React.TouchEvent) => {
-    // Prevent default to avoid any browser-specific handling
-    e.preventDefault();
-    // Call the onClick handler
-    onClick();
-  }, [onClick]);
-
+const FlappyBirdAppButton = React.memo(({ onClick, touchHandlers }: { onClick: () => void; touchHandlers: TouchHandlers }) => {
   return (
     <motion.button
       key="flappy-bird-app"
@@ -194,7 +193,10 @@ const FlappyBirdAppButton = React.memo(({ onClick }: { onClick: () => void }) =>
         damping: 20
       }}
       onClick={onClick}
-      onTouchStart={handleTouch} // Add touch handler for mobile
+      onTouchStart={touchHandlers.onTouchStart}
+      onTouchEnd={touchHandlers.onTouchEnd}
+      onTouchMove={touchHandlers.onTouchMove}
+      onTouchCancel={touchHandlers.onTouchCancel}
       className="flex flex-col items-center focus:outline-none group relative"
     >
       <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-200 group-hover:shadow-xl overflow-hidden">
@@ -224,6 +226,87 @@ export default function ModernIPhone({ onResumeClick, onFlappyBirdStateChange }:
   const [isFolderOpen, setIsFolderOpen] = useState(false);
   const [isFlappyBirdOpen, setIsFlappyBirdOpen] = useState(false);
   const dynamicIslandControls = useAnimation();
+  const activeTouchRef = useRef<{ id: number | null; target: EventTarget | null }>({
+    id: null,
+    target: null
+  });
+
+  const resetActiveTouch = () => {
+    activeTouchRef.current = { id: null, target: null };
+  };
+
+  const createTouchHandlers = ({
+    onStart,
+    onActivate
+  }: {
+    onStart?: () => void;
+    onActivate: () => void;
+  }): TouchHandlers => {
+    return {
+      onTouchStart: (event) => {
+        onStart?.();
+
+        if (event.touches.length !== 1) {
+          resetActiveTouch();
+          return;
+        }
+
+        const touch = event.touches[0];
+        activeTouchRef.current = {
+          id: touch.identifier,
+          target: event.currentTarget
+        };
+      },
+      onTouchEnd: (event) => {
+        const { id, target } = activeTouchRef.current;
+        if (id === null || target !== event.currentTarget) {
+          resetActiveTouch();
+          return;
+        }
+
+        const matchingTouch = Array.from(event.changedTouches).find(
+          (touch) => touch.identifier === id
+        );
+
+        if (matchingTouch) {
+          event.preventDefault();
+          onActivate();
+        }
+
+        resetActiveTouch();
+      },
+      onTouchMove: (event) => {
+        const { id, target } = activeTouchRef.current;
+        if (id === null || target !== event.currentTarget) {
+          return;
+        }
+
+        const activeTouch = Array.from(event.touches).find(
+          (touch) => touch.identifier === id
+        );
+
+        if (!activeTouch) {
+          resetActiveTouch();
+          return;
+        }
+
+        const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+        const { clientX, clientY } = activeTouch;
+
+        if (
+          clientX < rect.left ||
+          clientX > rect.right ||
+          clientY < rect.top ||
+          clientY > rect.bottom
+        ) {
+          resetActiveTouch();
+        }
+      },
+      onTouchCancel: () => {
+        resetActiveTouch();
+      }
+    };
+  };
 
   // Track folder animation origin
   const folderButtonRef = useRef<HTMLDivElement>(null);
@@ -396,12 +479,13 @@ export default function ModernIPhone({ onResumeClick, onFlappyBirdStateChange }:
 
   // Folder component
   const Folder = () => {
-    // Create a touch handler for the folder
-    const handleFolderTouch = (e: React.TouchEvent) => {
-      e.preventDefault();
-      handleInteraction();
-      openFolder();
-    };
+    const folderTouchHandlers = createTouchHandlers({
+      onStart: handleInteraction,
+      onActivate: () => {
+        handleInteraction();
+        openFolder();
+      }
+    });
     
     return (
       <div className="flex flex-col items-center focus:outline-none group relative">
@@ -412,7 +496,10 @@ export default function ModernIPhone({ onResumeClick, onFlappyBirdStateChange }:
             handleInteraction();
             openFolder();
           }}
-          onTouchStart={handleFolderTouch}
+          onTouchStart={folderTouchHandlers.onTouchStart}
+          onTouchEnd={folderTouchHandlers.onTouchEnd}
+          onTouchMove={folderTouchHandlers.onTouchMove}
+          onTouchCancel={folderTouchHandlers.onTouchCancel}
         >
           <motion.div 
             initial={{ scale: 1 }}
@@ -595,6 +682,11 @@ export default function ModernIPhone({ onResumeClick, onFlappyBirdStateChange }:
     setIsFlappyBirdOpen(true);
   };
 
+  const flappyBirdTouchHandlers = createTouchHandlers({
+    onStart: handleInteraction,
+    onActivate: handleFlappyBirdClick
+  });
+
   // Handle Flappy Bird game state change
   const handleFlappyBirdStateChange = (isPlaying: boolean) => {
     onFlappyBirdStateChange?.(isPlaying);
@@ -683,12 +775,13 @@ export default function ModernIPhone({ onResumeClick, onFlappyBirdStateChange }:
           <div className="grid grid-cols-4 gap-4 p-6 mt-2 z-20">
             {/* All project apps */}
             {projectApps.map((app, index) => {
-              // Create a touch handler for each app
-              const handleAppTouch = (e: React.TouchEvent) => {
-                e.preventDefault();
-                handleInteraction();
-                scrollToProject(app.sectionId);
-              };
+              const touchHandlers = createTouchHandlers({
+                onStart: handleInteraction,
+                onActivate: () => {
+                  handleInteraction();
+                  scrollToProject(app.sectionId);
+                }
+              });
               
               return (
                 <motion.button
@@ -704,7 +797,10 @@ export default function ModernIPhone({ onResumeClick, onFlappyBirdStateChange }:
                     handleInteraction();
                     scrollToProject(app.sectionId);
                   }}
-                  onTouchStart={handleAppTouch}
+                  onTouchStart={touchHandlers.onTouchStart}
+                  onTouchEnd={touchHandlers.onTouchEnd}
+                  onTouchMove={touchHandlers.onTouchMove}
+                  onTouchCancel={touchHandlers.onTouchCancel}
                   className="flex flex-col items-center focus:outline-none group relative"
                 >
                   <div className="relative">
@@ -755,22 +851,26 @@ export default function ModernIPhone({ onResumeClick, onFlappyBirdStateChange }:
             <Folder />
             
             {/* Flappy Bird next to the folder */}
-            <FlappyBirdAppButton onClick={handleFlappyBirdClick} />
+            <FlappyBirdAppButton 
+              onClick={handleFlappyBirdClick} 
+              touchHandlers={flappyBirdTouchHandlers}
+            />
           </div>
 
           {/* Bottom Row Apps */}
           <div className="absolute bottom-8 left-0 right-0 grid grid-cols-4 gap-6 px-6 z-20">
             {bottomRowApps.map((app) => {
-              // Create a touch handler for each bottom row app
-              const handleBottomAppTouch = (e: React.TouchEvent) => {
-                e.preventDefault();
-                handleInteraction();
-                if (app.name === 'Resume') {
-                  onResumeClick();
-                } else {
-                  app.onClick?.();
+              const touchHandlers = createTouchHandlers({
+                onStart: handleInteraction,
+                onActivate: () => {
+                  handleInteraction();
+                  if (app.name === 'Resume') {
+                    onResumeClick();
+                  } else {
+                    app.onClick?.();
+                  }
                 }
-              };
+              });
               
               return (
                 <motion.button
@@ -788,7 +888,10 @@ export default function ModernIPhone({ onResumeClick, onFlappyBirdStateChange }:
                       app.onClick?.();
                     }
                   }}
-                  onTouchStart={handleBottomAppTouch}
+                  onTouchStart={touchHandlers.onTouchStart}
+                  onTouchEnd={touchHandlers.onTouchEnd}
+                  onTouchMove={touchHandlers.onTouchMove}
+                  onTouchCancel={touchHandlers.onTouchCancel}
                   className="flex flex-col items-center focus:outline-none group"
                 >
                   <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-200 group-hover:shadow-xl overflow-hidden">
