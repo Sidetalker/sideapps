@@ -289,6 +289,12 @@ export default function ModernIPhone({ onResumeClick, onFlappyBirdStateChange }:
               className="w-full h-full object-cover rounded-2xl"
             />,
       onClick: () => {
+        const chatbotSection = document.getElementById('chatbot');
+        if (chatbotSection) {
+          chatbotSection.scrollIntoView({ behavior: 'smooth' });
+          return;
+        }
+
         const contactSection = document.getElementById('contact');
         if (contactSection) {
           contactSection.scrollIntoView({ behavior: 'smooth' });

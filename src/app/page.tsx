@@ -1,6 +1,7 @@
 import ProjectSection from '@/components/ProjectSection';
 import HeroSection from '@/components/HeroSection';
 import ContactSection from '@/components/ContactSection';
+import KevinChatbotSection from '@/components/KevinChatbotSection';
 import { getBasePath } from '@/utils/paths';
 
 export default function Home() {
@@ -152,6 +153,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <KevinChatbotSection />
 
       <ContactSection />
     </main>
