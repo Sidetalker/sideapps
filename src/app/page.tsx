@@ -3,6 +3,8 @@ import HeroSection from '@/components/HeroSection';
 import ContactSection from '@/components/ContactSection';
 import KevinChatbotSection from '@/components/KevinChatbotSection';
 import { getBasePath } from '@/utils/paths';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Home() {
   const washLoftImages = [
@@ -55,6 +57,21 @@ export default function Home() {
 
   return (
     <main>
+      <Link
+        href="/journey-west"
+        className="fixed top-6 right-6 z-50 block h-14 w-14 select-none opacity-0 transition-opacity duration-200 hover:opacity-100 focus-visible:opacity-100 active:opacity-100 sm:top-8 sm:right-8 sm:h-20 sm:w-20"
+        aria-label="Journey West tools directory"
+      >
+        <div className="relative h-full w-full overflow-hidden rounded-full p-2 sm:p-3">
+          <Image
+            src="/journeyWest/logo.png"
+            alt="Journey West mark"
+            fill
+            sizes="(min-width: 640px) 5rem, 3.5rem"
+            className="object-contain"
+          />
+        </div>
+      </Link>
       <HeroSection />
 
       <section className="relative bg-black">

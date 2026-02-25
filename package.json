@@ -11,13 +11,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@vercel/analytics": "^1.5.0",
+    "@vercel/blob": "^2.0.0",
+    "@vercel/speed-insights": "^1.2.0",
+    "caniuse-lite": "^1.0.30001753",
     "framer-motion": "^12.4.7",
-    "next": "15.1.7",
+    "i": "^0.3.7",
+    "next": "15.5.9",
+    "npm": "^11.4.1",
+    "pdfjs-dist": "^5.2.133",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
     "react-pdf": "^9.2.1",
-    "react-rough-notation": "^1.0.5",
+    "react-rough-notation": "^1.0.8",
     "rough-notation": "^0.5.1",
     "swiper": "^11.2.4"
   },

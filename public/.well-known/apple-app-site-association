@@ -1,0 +1,18 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "BJCYPHYPU2.com.patronyk.NutraAIM",
+        "paths": [
+          "/__/auth/*"
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "BJCYPHYPU2.com.patronyk.NutraAIM"
+    ]
+  }
+}

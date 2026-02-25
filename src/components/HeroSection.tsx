@@ -86,7 +86,7 @@ export default function HeroSection() {
         {/* Content */}
         <motion.div 
           style={{ opacity: contentOpacity, y: contentY }}
-          className="fixed top-0 left-0 right-0 z-30 pointer-events-none max-w-[100vw]"
+          className="fixed top-0 left-0 right-0 z-10 pointer-events-none max-w-[100vw]"
         >
           <div className="flex flex-col md:justify-start md:items-start items-center p-8 md:p-16 lg:p-24">
             <motion.div
@@ -142,7 +142,7 @@ export default function HeroSection() {
         {/* iPhone Container */}
         <motion.div 
           style={{ opacity: elementOpacity }}
-          className="sticky md:top-[20vh] top-[215px] w-full h-screen mt-0 z-[5] md:z-20"
+          className="sticky md:top-[20vh] top-[215px] w-full h-screen mt-0 z-30 md:z-20"
         >
           <div className="relative w-full h-full flex md:block justify-center">
             {/* Hand-drawn elements - positioned relative to the iPhone - hidden on mobile */}
