@@ -61,6 +61,23 @@ export const CHANGE_TYPE_META: Record<
 /** Newest entries first. Add new releases at the top. */
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.3.0',
+    date: '2026-06-29',
+    title: 'Changelog app on the iPhone',
+    changes: [
+      {
+        type: 'added',
+        description:
+          'Added a Changelog app that launches from the iPhone home screen, with an iOS-style nav bar and a scrollable timeline of releases.',
+      },
+      {
+        type: 'changed',
+        description:
+          'Reworked the Flappy Bird exit so the morphing "Exit Flappy Bird" button stays visible and interactive while the game is open, instead of relying on a separate close button.',
+      },
+    ],
+  },
+  {
     version: '1.2.0',
     date: '2026-06-29',
     title: 'Flappy Bird refresh',
