@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 
 // Game constants
@@ -707,20 +708,28 @@ const FlappyBird: React.FC<FlappyBirdProps> = ({ onClose, onGameStateChange }) =
     onClose();
   }, [onClose, onGameStateChange]);
 
-  return (
+  // Only render the portal on the client (document is unavailable during SSR)
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  const overlay = (
     <motion.div
       initial={{ scale: 1, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 1, opacity: 0 }}
-      className="fixed inset-0 z-50 bg-slate-900 flex items-center justify-center"
+      className="fixed inset-0 z-[9999] bg-slate-900 flex items-center justify-center"
       onClick={(e) => e.stopPropagation()}
     >
-      {/* Close button - hidden on mobile */}
-      <div className="absolute top-3 right-3 z-10 hidden md:block">
+      {/* Close button - always visible */}
+      <div className="absolute top-4 right-4 z-10">
         <button
           onClick={handleClose}
           aria-label="Close game"
-          className="w-9 h-9 flex items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm hover:bg-white/25 transition-colors"
+          className="w-11 h-11 flex items-center justify-center rounded-full bg-white/15 text-white text-lg backdrop-blur-sm hover:bg-white/25 active:bg-white/30 transition-colors"
         >
           ✕
         </button>
@@ -746,6 +755,10 @@ const FlappyBird: React.FC<FlappyBirdProps> = ({ onClose, onGameStateChange }) =
       </div>
     </motion.div>
   );
+
+  // Render to document.body so the overlay escapes the transformed,
+  // overflow-hidden iPhone container (transformed ancestors break `position: fixed`).
+  return createPortal(overlay, document.body);
 };
 
 export default FlappyBird;
