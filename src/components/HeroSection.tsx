@@ -85,15 +85,18 @@ export default function HeroSection() {
         
         {/* Content */}
         <motion.div 
-          style={{ opacity: contentOpacity, y: contentY }}
-          className="fixed top-0 left-0 right-0 z-10 pointer-events-none max-w-[100vw]"
+          style={{
+            opacity: isFlappyBirdActive ? 1 : contentOpacity,
+            y: isFlappyBirdActive ? 0 : contentY,
+          }}
+          className={`fixed top-0 left-0 right-0 pointer-events-none max-w-[100vw] ${isFlappyBirdActive ? 'z-[60]' : 'z-10'}`}
         >
           <div className="flex flex-col md:justify-start md:items-start items-center p-8 md:p-16 lg:p-24">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              style={{ pointerEvents: pointerEventsValue }}
+              style={{ pointerEvents: isFlappyBirdActive ? 'auto' : pointerEventsValue }}
               className="md:max-w-[50%] pt-8 md:pt-16 w-full"
             >
               <div className="flex flex-col items-center md:items-start w-full">
@@ -129,8 +132,8 @@ export default function HeroSection() {
                   transition={{ duration: 0.8, delay: 0.5 }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  style={{ pointerEvents: pointerEventsValue }}
-                  className={`inline-block ${isFlappyBirdActive ? 'bg-red-600 hover:bg-red-700' : 'bg-black hover:bg-zinc-900'} border-2 border-white/20 rounded-xl text-white font-medium py-3 px-6 transition-colors duration-200 relative w-[200px] text-center`}
+                  style={{ pointerEvents: isFlappyBirdActive ? 'auto' : pointerEventsValue }}
+                  className={`inline-block ${isFlappyBirdActive ? 'bg-red-600 hover:bg-red-700 z-[60]' : 'bg-black hover:bg-zinc-900'} border-2 border-white/20 rounded-xl text-white font-medium py-3 px-6 transition-colors duration-200 relative w-[200px] text-center`}
                 >
                   {isFlappyBirdActive ? 'Exit Flappy Bird' : 'Let\'s Connect!'}
                 </motion.button>
