@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { getBasePath } from '@/utils/paths';
 import React from 'react';
 import FlappyBird from './FlappyBird';
+import ChangelogApp from './ChangelogApp';
 
 interface ProjectApp {
   name: string;
@@ -215,6 +216,44 @@ const FlappyBirdAppButton = React.memo(({ onClick, touchHandlers }: { onClick: (
 
 FlappyBirdAppButton.displayName = 'FlappyBirdAppButton';
 
+// Changelog app button, memoized to avoid re-renders alongside its siblings
+const ChangelogAppButton = React.memo(({ onClick, touchHandlers }: { onClick: () => void; touchHandlers: TouchHandlers }) => {
+  return (
+    <motion.button
+      key="changelog-app"
+      initial={{ scale: 1 }}
+      animate={{ scale: 1 }}
+      whileHover={{ scale: 0.9 }}
+      whileTap={{ scale: 0.85 }}
+      transition={{ 
+        duration: 0.2,
+        type: "spring",
+        stiffness: 300,
+        damping: 20
+      }}
+      onClick={onClick}
+      onTouchStart={touchHandlers.onTouchStart}
+      onTouchEnd={touchHandlers.onTouchEnd}
+      onTouchMove={touchHandlers.onTouchMove}
+      onTouchCancel={touchHandlers.onTouchCancel}
+      className="flex flex-col items-center focus:outline-none group relative"
+    >
+      <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-200 group-hover:shadow-xl overflow-hidden">
+        <Image 
+          src={`${getBasePath()}/changelog/icon.png`}
+          alt="Changelog" 
+          width={56} 
+          height={56} 
+          className="w-full h-full object-cover rounded-2xl"
+        />
+      </div>
+      <div className="text-[10px] text-white/90 mt-1">Changelog</div>
+    </motion.button>
+  );
+});
+
+ChangelogAppButton.displayName = 'ChangelogAppButton';
+
 export default function ModernIPhone({ onResumeClick, onFlappyBirdStateChange }: ModernIPhoneProps) {
   const [currentTime, setCurrentTime] = useState('');
   const [mounted, setMounted] = useState(false);
@@ -225,6 +264,7 @@ export default function ModernIPhone({ onResumeClick, onFlappyBirdStateChange }:
   const [isDeveloperMode, setIsDeveloperMode] = useState(false);
   const [isFolderOpen, setIsFolderOpen] = useState(false);
   const [isFlappyBirdOpen, setIsFlappyBirdOpen] = useState(false);
+  const [isChangelogOpen, setIsChangelogOpen] = useState(false);
   const dynamicIslandControls = useAnimation();
   const activeTouchRef = useRef<{ id: number | null; target: EventTarget | null }>({
     id: null,
@@ -693,6 +733,17 @@ export default function ModernIPhone({ onResumeClick, onFlappyBirdStateChange }:
     onActivate: handleFlappyBirdClick
   });
 
+  // Changelog app open/close, mirroring the Flappy Bird launch pattern
+  const handleChangelogClick = () => {
+    handleInteraction();
+    setIsChangelogOpen(true);
+  };
+
+  const changelogTouchHandlers = createTouchHandlers({
+    onStart: handleInteraction,
+    onActivate: handleChangelogClick
+  });
+
   // Handle Flappy Bird game state change
   const handleFlappyBirdStateChange = (isPlaying: boolean) => {
     onFlappyBirdStateChange?.(isPlaying);
@@ -861,6 +912,12 @@ export default function ModernIPhone({ onResumeClick, onFlappyBirdStateChange }:
               onClick={handleFlappyBirdClick} 
               touchHandlers={flappyBirdTouchHandlers}
             />
+
+            {/* Changelog app */}
+            <ChangelogAppButton 
+              onClick={handleChangelogClick} 
+              touchHandlers={changelogTouchHandlers}
+            />
           </div>
 
           {/* Bottom Row Apps */}
@@ -922,6 +979,13 @@ export default function ModernIPhone({ onResumeClick, onFlappyBirdStateChange }:
                 onClose={() => setIsFlappyBirdOpen(false)} 
                 onGameStateChange={handleFlappyBirdStateChange}
               />
+            )}
+          </AnimatePresence>
+
+          {/* Changelog App */}
+          <AnimatePresence>
+            {isChangelogOpen && (
+              <ChangelogApp onClose={() => setIsChangelogOpen(false)} />
             )}
           </AnimatePresence>
         </div>
